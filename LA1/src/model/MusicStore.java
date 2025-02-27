@@ -35,7 +35,7 @@ public class MusicStore {
 
 
 				while((albumFileLine = brAlbum.readLine()) != null) {
-					Song song = new Song(albumFileLine, albumInfo[1], album);
+					Song song = new Song(albumFileLine, albumInfo[1], albumInfo[0]);
 					songs.add(song);
 				}
 
@@ -115,14 +115,4 @@ public class MusicStore {
 		return returnList;
 		
 	}
-	
-<<<<<<< HEAD
-=======
-	public static void main(String args[]) {
-		MusicStore ms = new MusicStore();
-		ms.readFile("albums.txt");
-		ms.getAlbumByArtist("Adele");
-	}
-
->>>>>>> branch 'b1' of https://github.com/ankitgarg340/LA1.git
 }
