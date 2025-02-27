@@ -16,11 +16,7 @@ public class Album {
 		year = y;
 		songs = s;
 	}
-	
-	public void addSong(Song s) {
-		songs.add(s);
-	}
-	
+
 	public String toString() {
 		return this.title + "," + this.artist + "," + this.genre + "," + this.year + "," + songs.size();
 	}

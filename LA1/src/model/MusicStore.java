@@ -31,12 +31,14 @@ public class MusicStore {
 				String albumFileLine = brAlbum.readLine();
 				String[] albumInfo = albumFileLine.split(",");
 
-				Album album = new Album(albumInfo[0], albumInfo[1], albumInfo[2], albumInfo[3], songs);
-				
+
 				while((albumFileLine = brAlbum.readLine()) != null) {
-					Song song = new Song(albumFileLine, albumInfo[1], album);
-					album.addSong(song);
+					Song song = new Song(albumFileLine, albumInfo[1], albumInfo[0]);
+					songs.add(song);
 				}
+
+				Album album = new Album(albumInfo[0], albumInfo[1], albumInfo[2], albumInfo[3], songs);
+
 				this.addAlbum(album);
 			}
 			

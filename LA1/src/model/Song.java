@@ -3,11 +3,11 @@ package model;
 public class Song {
 	private final String title;
 	private final String artist;
-	private final Album album;
+	private final String albumName;
 	
-	public Song(String titleIn, String artistIn, Album albumIn) {
+	public Song(String titleIn, String artistIn, String albumName) {
 		title = titleIn;
 		artist = artistIn;
-		album = albumIn;
+		this.albumName = albumName;
 	}
 }
