@@ -1,4 +1,6 @@
 package model;
+import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
 import java.io.BufferedReader;
@@ -13,7 +15,7 @@ public class MusicStore {
 		albums = new ArrayList<Album>();
 	}
 	
-	public void addAlbum(Album a) {
+	private void addAlbum(Album a) {
 		albums.add(a);
 	}
 	
@@ -31,12 +33,14 @@ public class MusicStore {
 				String albumFileLine = brAlbum.readLine();
 				String[] albumInfo = albumFileLine.split(",");
 
-				Album album = new Album(albumInfo[0], albumInfo[1], albumInfo[2], albumInfo[3], songs);
-				
+
 				while((albumFileLine = brAlbum.readLine()) != null) {
 					Song song = new Song(albumFileLine, albumInfo[1], album);
 					songs.add(song);
 				}
+
+				Album album = new Album(albumInfo[0], albumInfo[1], albumInfo[2], albumInfo[3], songs);
+
 				this.addAlbum(album);
 				brAlbum.close();
 			}
@@ -53,7 +57,8 @@ public class MusicStore {
 	public ArrayList<Album> getAlbums() {
 		return new ArrayList<Album>(this.albums);
 	}
-	
+
+  
 	public ArrayList<Song> getSongByTitle(String title) {
 		ArrayList<Song> returnList = new ArrayList<Song>();
 				
@@ -111,4 +116,13 @@ public class MusicStore {
 		
 	}
 	
+<<<<<<< HEAD
+=======
+	public static void main(String args[]) {
+		MusicStore ms = new MusicStore();
+		ms.readFile("albums.txt");
+		ms.getAlbumByArtist("Adele");
+	}
+
+>>>>>>> branch 'b1' of https://github.com/ankitgarg340/LA1.git
 }
