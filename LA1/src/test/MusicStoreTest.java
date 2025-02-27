@@ -30,7 +30,74 @@ public class MusicStoreTest {
 	@Test
 	public void testReadFile() {
 		MusicStore ms = new MusicStore();
-		Exception io = new Exception IOException();
-		AssertEquals(ms.readFile(""), io);
+		assertFalse(ms.readFile(""));
+		
+		assertTrue(ms.readFile("albums.txt"));
+		
+		assertEquals(ms.getAlbums().size(), 15);
+	}
+	
+	@Test
+	public void testGetAlbums() {
+		MusicStore ms = new MusicStore();
+		assertEquals(ms.getAlbums().size(), 0);
+		
+		ms.readFile("albums.txt");
+		assertEquals(ms.getAlbums().size(), 15);
+	}
+	
+	@Test
+	public void testGetSongByTitle() {
+		MusicStore ms = new MusicStore();
+		ms.readFile("albums.txt");
+		
+		ArrayList<Song> test = ms.getSongByTitle("Daylight");
+		assertEquals(test.size(), 1);
+		assertEquals(test.get(0).getTitle(), "Daylight");
+		
+		test = ms.getSongByTitle("NONEXISTENT");
+		assertEquals(test.size(), 0);
+	}
+	
+	@Test
+	public void testGetSongByArtist() {
+		MusicStore ms = new MusicStore();
+		ms.readFile("albums.txt");
+		
+		ArrayList<Song> test = ms.getSongByArtist("Adele");
+		for(Song s : test) {
+			assertEquals(s.getArtist(), "Adele");
+		}
+		
+		test = ms.getSongByArtist("NONEXISTENT");
+		assertEquals(test.size(), 0);
+	}
+	
+	@Test
+	public void testGetAlbumByTitle() {
+		MusicStore ms = new MusicStore();
+		ms.readFile("albums.txt");
+		
+		ArrayList<Album> test = ms.getAlbumByTitle("21");
+		for(Album a : test) {
+			assertEquals(a.getTitle(), "21");
+		}
+		
+		test = ms.getAlbumByTitle("");
+		assertEquals(test.size(), 0);
+	}
+	
+	@Test
+	public void testGetAlbumByArtist() {
+		MusicStore ms = new MusicStore();
+		ms.readFile("albums.txt");
+		
+		ArrayList<Album> test = ms.getAlbumByArtist("Adele");
+		for(Album a : test) {
+			assertEquals(a.getArtist(), "Adele");
+		}
+		
+		test = ms.getAlbumByArtist("");
+		assertEquals(test.size(), 0);
 	}
 }
