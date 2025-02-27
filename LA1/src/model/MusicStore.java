@@ -52,7 +52,7 @@ public class MusicStore {
 		return new ArrayList<Album>(this.albums);
 	}
 	
-	public static void main(String args[]) {
+	public static void main(String[] args) {
 		MusicStore ms = new MusicStore();
 		ms.readFile("albums.txt");
 		
