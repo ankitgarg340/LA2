@@ -2,7 +2,9 @@ package view;
 
 import model.LibraryModel;
 import model.MusicStore;
+import model.Song;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class View {
@@ -48,12 +50,42 @@ public class View {
             if (command == 0) {
                 break;
             } else if (command == 1) {
-                int a = 0;
+                searchSongsInStore();
             } else if (command == 2) {
                 int a = 0;
             }
-
         }
+    }
+
+    private void searchSongsInStore() {
+        while (true) {
+            System.out.println("How would like to search for a song");
+            System.out.println("[1] - By title");
+            System.out.println("[2] - By artist");
+            printBackOrExitMessege();
+            int command = getUserInput(1, 2);
+            List<Song> searchResult = null;
+            if (command == 0) {
+                break;
+            } else if (command == 1) {
+                searchResult = searchSongsInStoreByTitle();
+            } else if (command == 2) {
+                searchResult = searchSongsInStoreByArtist();
+            }
+            int a = 0;
+        }
+    }
+
+    private List<Song> searchSongsInStoreByTitle() {
+        System.out.println("Enter the title of the song");
+        String input = scanner.nextLine();
+        return musicStore.getSongByTitle(input);
+    }
+
+    private List<Song> searchSongsInStoreByArtist() {
+        System.out.println("Enter the artist of the song");
+        String input = scanner.nextLine();
+        return musicStore.getSongByArtist(input);
     }
 
     private void libraryCommands() {
