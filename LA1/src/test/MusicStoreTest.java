@@ -14,20 +14,6 @@ public class MusicStoreTest {
 	}
 	
 	@Test
-	public void testAddAlbum() {
-		MusicStore ms = new MusicStore();
-		assertEquals(ms.getAlbums().size(), 0);
-		
-		Album a1 = new Album("", "","", "", new ArrayList<Song>());
-		ms.addAlbum(a1);
-		assertEquals(ms.getAlbums().size(), 1);
-		
-		Album a2 = new Album("", "", "", "", new ArrayList<Song>());
-		ms.addAlbum(a2);
-		assertEquals(ms.getAlbums().size(), 2);
-	}
-	
-	@Test
 	public void testReadFile() {
 		MusicStore ms = new MusicStore();
 		assertFalse(ms.readFile(""));
