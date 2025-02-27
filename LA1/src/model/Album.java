@@ -16,12 +16,29 @@ public class Album {
 		year = y;
 		songs = s;
 	}
+
 	
-	public void addSong(Song s) {
-		songs.add(s);
+	public void printAlbum() {
+		System.out.println("album title: " + title);
+		System.out.println("artist: " + artist);
+		System.out.println("genre: " + genre);
+		System.out.println("year released: " + year);
+		System.out.println("songs: ");
+		for(Song s : songs) {
+			System.out.println(s.getTitle());
+		}
+		System.out.println();
 	}
 	
-	public String toString() {
-		return this.title + "," + this.artist + "," + this.genre + "," + this.year + "," + songs.size();
+	public ArrayList<Song> getSongs() {
+		return new ArrayList<Song>(this.songs);
+	}
+	
+	public String getTitle() {
+		return title;
+	}
+	
+	public String getArtist() {
+		return artist;
 	}
 }

@@ -10,4 +10,24 @@ public class Song {
 		artist = artistIn;
 		album = albumIn;
 	}
+	
+	public String toString() {
+		String song = title + " by " + artist + " in album " + album.getTitle();
+		return song;
+	}
+	
+	public void printSong() {
+		System.out.println("song title: " + title);
+		System.out.println("artist: " + artist);
+		System.out.println("album: " + album.getTitle());
+		System.out.println();
+	}
+	
+	public String getTitle() {
+		return title;
+	}
+	
+	public String getArtist() {
+		return artist;
+	}
 }
