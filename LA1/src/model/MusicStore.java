@@ -17,7 +17,7 @@ public class MusicStore {
 		albums.add(a);
 	}
 	
-	public void readFile(String file) {
+	public boolean readFile(String file) {
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(file));
 			String line;
@@ -41,10 +41,11 @@ public class MusicStore {
 				brAlbum.close();
 			}
 			br.close();
+			return true;
 			
 		} catch (Exception IOEXception) {
 			System.out.println("Error: File could not be opened "  + file);
-			System.exit(1);
+			return false;
 		}
 		 
 	}
@@ -108,12 +109,6 @@ public class MusicStore {
 		
 		return returnList;
 		
-	}
-	
-	public static void main(String args[]) {
-		MusicStore ms = new MusicStore();
-		ms.readFile("albums.txt");
-		ms.getAlbumByArtist("Adele");
 	}
 	
 }
