@@ -35,14 +35,16 @@ public class MusicStore {
 
 
 				while((albumFileLine = brAlbum.readLine()) != null) {
-					Song song = new Song(albumFileLine, albumInfo[1], albumInfo[0]);
+					Song song = new Song(albumFileLine, albumInfo[1], album);
 					songs.add(song);
 				}
 
 				Album album = new Album(albumInfo[0], albumInfo[1], albumInfo[2], albumInfo[3], songs);
 
 				this.addAlbum(album);
+				brAlbum.close();
 			}
+			br.close();
 			
 		} catch (Exception IOEXception) {
 			System.out.println("Error: File could not be opened "  + file);
@@ -54,4 +56,69 @@ public class MusicStore {
 	public ArrayList<Album> getAlbums() {
 		return new ArrayList<Album>(this.albums);
 	}
+
+  
+	public ArrayList<Song> getSongByTitle(String title) {
+		ArrayList<Song> returnList = new ArrayList<Song>();
+				
+		for(Album a : this.getAlbums()) {
+			for(Song s : a.getSongs()) {
+				if(s.getTitle().equals(title)) {
+					s.printSong();
+					returnList.add(s);
+				}
+			}
+		}
+		
+		return returnList;
+	}
+	
+	public ArrayList<Song> getSongByArtist(String artist) {
+		ArrayList<Song> returnList = new ArrayList<Song>();
+		
+		for(Album a : this.getAlbums()) {
+			for(Song s : a.getSongs()) {
+				if(s.getArtist().equals(artist)) {
+					s.printSong();
+					returnList.add(s);
+				}
+			}
+		}
+		
+		return returnList;
+	}
+	
+	public ArrayList<Album> getAlbumByTitle(String album) {
+		ArrayList<Album> returnList = new ArrayList<Album>();
+		
+		for(Album a : this.getAlbums()) {
+			if(a.getTitle().equals(album)) {
+				a.printAlbum();
+				returnList.add(a);
+			}
+		}
+		
+		return returnList;
+	}
+	
+	public ArrayList<Album> getAlbumByArtist(String artist) {
+		ArrayList<Album> returnList = new ArrayList<Album>();
+		
+		for(Album a : this.getAlbums()) {
+			if(a.getArtist().equals(artist)) {
+				a.printAlbum();
+				returnList.add(a);
+			}
+		}
+		
+		return returnList;
+		
+	}
+	
+	public static void main(String args[]) {
+		MusicStore ms = new MusicStore();
+		ms.readFile("albums.txt");
+		ms.getAlbumByArtist("Adele");
+	}
+
 }
