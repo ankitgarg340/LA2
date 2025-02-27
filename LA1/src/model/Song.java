@@ -10,4 +10,8 @@ public class Song {
 		artist = artistIn;
 		this.albumName = albumName;
 	}
+
+	public String getTitle(){
+		return title;
+	}
 }
