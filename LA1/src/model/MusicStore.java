@@ -1,4 +1,6 @@
 package model;
+import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
 import java.io.BufferedReader;
@@ -13,7 +15,7 @@ public class MusicStore {
 		albums = new ArrayList<Album>();
 	}
 	
-	public void addAlbum(Album a) {
+	private void addAlbum(Album a) {
 		albums.add(a);
 	}
 	
@@ -45,7 +47,6 @@ public class MusicStore {
 		} catch (Exception IOEXception) {
 			System.out.println("Error: File could not be opened "  + file);
 			System.exit(1);
-		
 		}
 		 
 	}
@@ -53,14 +54,4 @@ public class MusicStore {
 	public ArrayList<Album> getAlbums() {
 		return new ArrayList<Album>(this.albums);
 	}
-	
-	public static void main(String[] args) {
-		MusicStore ms = new MusicStore();
-		ms.readFile("albums.txt");
-		
-		for(Album a : ms.getAlbums()) {
-			System.out.println(a.toString());
-		}
-	}
-
 }

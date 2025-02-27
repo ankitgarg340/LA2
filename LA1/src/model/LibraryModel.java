@@ -39,6 +39,4 @@ public class LibraryModel {
     public void createPlaylist(String name) {
         playlists.add(new Playlist(name));
     }
-
-
 }
