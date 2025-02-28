@@ -101,4 +101,5 @@ public class MusicStore {
     private void addAlbum(Album a) {
         albums.add(a);
     }
+
 }
