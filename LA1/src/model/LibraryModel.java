@@ -213,7 +213,7 @@ public class LibraryModel {
 
     /**
      * Return the rating of a song
-     * @param song song to add rating
+     * @param song song to get its rating
      * @return the rating of a song, -1 if the song is not in the library
      */
     public int getSongRating(Song song) {
