@@ -61,6 +61,12 @@ public class LibraryModel {
         return returnPlaylistsNames;
     }
 
+    /**
+     * Give a rating for a song from 1 to 5, if a song is not in the library, don't do anything
+     * @param s a song
+     * @param rating the rating for the song
+     * @throws IllegalArgumentException if rating < 1 || rating > 5
+     */
     public void rateSong(Song s, int rating) throws IllegalArgumentException {
         SongInLibrary sil = getSongInLibraryFromSong(s);
         if (sil != null) {
@@ -98,6 +104,11 @@ public class LibraryModel {
         return null;
     }
 
+    /**
+     * Get the list of the songs in the playlist.
+     * @param playlistName name of the playlist
+     * @return list of songs in the playlist, null if there is no playlist for the given name
+     */
     public List<Song> getSongsOfPlaylist(String playlistName) {
         Playlist p = getPlaylistFromName(playlistName);
         if (p == null) {
@@ -107,6 +118,11 @@ public class LibraryModel {
         }
     }
 
+    /**
+     * Add a song for a playlist if the playlist exist and the song is in the library
+     * @param playlistName name of the playlist
+     * @param song song to add to playlist
+     */
     public void addSongToPlayList(String playlistName, Song song) {
         if (containSong(song)) {
             Playlist playlist = getPlaylistFromName(playlistName);
@@ -116,6 +132,11 @@ public class LibraryModel {
         }
     }
 
+    /**
+     * Remove a song for a playlist if the playlist exist and the song is in the library
+     * @param playlistName name of the playlist
+     * @param song song to remove from playlist
+     */
     public void removeSongToPlayList(String playlistName, Song song) {
         if (containSong(song)) {
             Playlist playlist = getPlaylistFromName(playlistName);
@@ -190,6 +211,11 @@ public class LibraryModel {
         return getPlaylistFromName(name) != null;
     }
 
+    /**
+     * Return the rating of a song
+     * @param song song to add rating
+     * @return the rating of a song, -1 if the song is not in the library
+     */
     public int getSongRating(Song song) {
         SongInLibrary sil = getSongInLibraryFromSong(song);
         if (sil == null) {
