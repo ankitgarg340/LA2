@@ -22,6 +22,8 @@ public class MusicStore {
     public void readFile(String file) throws IOException {
         BufferedReader br = new BufferedReader(new FileReader(file));
         String line;
+
+        // for every album in the file
         while ((line = br.readLine()) != null) {
             String[] albumLine = line.split(",");
             String albumFile = albumLine[0] + "_" + albumLine[1] + ".txt";
@@ -32,7 +34,7 @@ public class MusicStore {
             String albumFileLine = brAlbum.readLine();
             String[] albumInfo = albumFileLine.split(",");
 
-
+            // read all the songs of the album
             while ((albumFileLine = brAlbum.readLine()) != null) {
                 Song song = new Song(albumFileLine, albumInfo[1], albumInfo[0]);
                 songs.add(song);
