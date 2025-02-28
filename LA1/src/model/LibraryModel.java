@@ -87,7 +87,7 @@ public class LibraryModel {
         }
     }
 
-    public Playlist getPlaylistFromName(String name) {
+    private Playlist getPlaylistFromName(String name) {
         for (Playlist p : playlists) {
             if (p.getName().equals(name)) {
                 return p;
@@ -175,6 +175,9 @@ public class LibraryModel {
         return returnList;
     }
 
+    public boolean isPlaylistExist(String name) {
+        return getPlaylistFromName(name) != null;
+    }
 
     private SongInLibrary getSongInLibraryFromSong(Song s) {
         for (SongInLibrary sil : songs) {

@@ -3,7 +3,6 @@ package view;
 import model.Album;
 import model.LibraryModel;
 import model.MusicStore;
-import model.Playlist;
 import model.Song;
 
 import java.io.IOException;
@@ -26,7 +25,7 @@ public class View {
         try {
             musicStore.readFile(dataFile);
         } catch (IOException e) {
-            System.out.println("Could not load data from file with error msg - "+e.getMessage());
+            System.out.println("Could not load data from file with error msg - " + e.getMessage());
             System.exit(1);
         }
     }
@@ -37,7 +36,7 @@ public class View {
             System.out.println("[1] - Music store");
             System.out.println("[2] - Library");
             printBackOrExitMessege();
-            int command = getUserInput(1, 2);
+            int command = getUserInput(2);
             if (command == 0) {
                 break;
             } else if (command == 1) {
@@ -54,7 +53,7 @@ public class View {
             System.out.println("[1] - Search for a song");
             System.out.println("[2] - Search for an album");
             printBackOrExitMessege();
-            int command = getUserInput(1, 2);
+            int command = getUserInput(2);
             if (command == 0) {
                 break;
             } else if (command == 1) {
@@ -71,7 +70,7 @@ public class View {
             System.out.println("[1] - By title");
             System.out.println("[2] - By artist");
             printBackOrExitMessege();
-            int command = getUserInput(1, 2);
+            int command = getUserInput(2);
             if (command == 0) {
                 break;
             } else if (command == 1) {
@@ -107,7 +106,7 @@ public class View {
                 System.out.println("[" + (i + 1) + "] - " + searchResult.get(i).toString());
             }
             printBackOrExitMessege();
-            int command = getUserInput(1, searchResult.size());
+            int command = getUserInput(searchResult.size());
 
             if (command == 0) {
                 break;
@@ -125,7 +124,7 @@ public class View {
             System.out.println("[1] - By title");
             System.out.println("[2] - By artist");
             printBackOrExitMessege();
-            int command = getUserInput(1, 2);
+            int command = getUserInput(2);
             if (command == 0) {
                 break;
             } else if (command == 1) {
@@ -160,12 +159,12 @@ public class View {
             for (int i = 0; i < searchResult.size(); i++) {
                 System.out.println("[" + (i + 1) + "] - " + searchResult.get(i).toString());
                 System.out.println("\tSongs:");
-                for(Song s : searchResult.get(i).getSongs()){
-                    System.out.println("\t\t"+s.toString());
+                for (Song s : searchResult.get(i).getSongs()) {
+                    System.out.println("\t\t" + s.toString());
                 }
             }
             printBackOrExitMessege();
-            int command = getUserInput(1, searchResult.size());
+            int command = getUserInput(searchResult.size());
             if (command == 0) {
                 break;
             } else if (command >= 1 && command <= searchResult.size()) {
@@ -184,9 +183,8 @@ public class View {
             System.out.println("[2] - Search for albums");
             System.out.println("[3] - Search for playlists");
             System.out.println("[4] - Create a playlist");
-            System.out.println("[5] - Modify/Delete an existing playlist");
             printBackOrExitMessege();
-            int command = getUserInput(1, 5);
+            int command = getUserInput(4);
 
             if (command == 0) {
                 break;
@@ -197,89 +195,155 @@ public class View {
             } else if (command == 3) {
                 searchPlaylists();
             } else if (command == 4) {
-                int a = 0;
-            } else if (command == 5) {
-            	int a = 0;
+                createPlaylist();
             }
         }
     }
-    
+
     private void searchSongsInLibrary() {
         while (true) {
             System.out.println("How would like to search for a song?");
             System.out.println("[1] - By title");
             System.out.println("[2] - By artist");
+            System.out.println("[3] - Get all");
+            System.out.println("[4] - Get favorites");
             printBackOrExitMessege();
-            int command = getUserInput(1, 2);
+            int command = getUserInput(4);
             if (command == 0) {
                 break;
             } else if (command == 1) {
                 handleSongsSearchInLibrary(searchSongsInLibraryByTitle());
             } else if (command == 2) {
                 handleSongsSearchInLibrary(searchSongsInLibrayByArtist());
+            } else if (command == 3) {
+                handleSongsSearchInLibrary(libraryModel.getAllSongs());
+            } else if (command == 4) {
+                handleSongsSearchInLibrary(libraryModel.getFavoriteSongs());
             }
         }
     }
-    
+
     private void searchPlaylists() {
         while (true) {
-            System.out.println("Enter the title of the playlist: ");
-            String input = scanner.nextLine();
-            
-            Playlist pl = libraryModel.getPlaylistFromName(input);
-            if(pl != null) {
-            	System.out.println(pl.getName());
-            	System.out.println("\tSongs:");
-            	for(Song s : pl.getSongs()) {
-            		System.out.println("\t\t" + s.toString());
-            	}
-            } else {
-            	System.out.println("No Playlist Found");
-            	break;
+            System.out.println("How would like to search for playlists");
+            System.out.println("[1] - By title");
+            System.out.println("[2] - Get all");
+            printBackOrExitMessege();
+            int command = getUserInput(2);
+            if (command == 0) {
+                break;
+            } else if (command == 1) {
+                handlePlaylistSearchByNameInLibrary();
+            } else if (command == 2) {
+                handlePlaylistSearchInLibrary();
             }
-            break;
         }
-        printBackOrExitMessege();
-        getUserInput(0,0);
     }
-    
+
+    private void handlePlaylistSearchByNameInLibrary() {
+        System.out.println("Enter the title of the playlist: ");
+        String input = scanner.nextLine();
+        if (!libraryModel.isPlaylistExist(input)) {
+            System.out.println("Playlist doesn't exist with that name");
+        } else {
+            handlePlaylistAction(input);
+        }
+    }
+
+    private void handlePlaylistSearchInLibrary() {
+        while (true) {
+            String selectedPlaylist = choosePlaylistFromAll();
+            if (selectedPlaylist.isEmpty()) {
+                break;
+            }
+            handlePlaylistAction(selectedPlaylist);
+        }
+    }
+
+    private void handlePlaylistAction(String playlist) {
+        while (true) {
+            System.out.println("How would like to do on the playlist " + playlist);
+            System.out.println("[1] - View all songs");
+            System.out.println("[2] - Remove a song");
+            printBackOrExitMessege();
+            int command = getUserInput(2);
+            if (command == 0) {
+                break;
+            } else if (command == 1) {
+                printSongsOfPlaylist(playlist);
+            } else if (command == 2) {
+                deleteSongFromPlaylist(playlist);
+            }
+        }
+    }
+
+    private void printSongsOfPlaylist(String playlist) {
+        List<Song> songs = libraryModel.getSongsOfPlaylist(playlist);
+        if (songs.isEmpty()) {
+            System.out.println("Playlist is empty");
+        }
+        for (Song s : songs) {
+            System.out.println(s.toString());
+        }
+    }
+
+    private void deleteSongFromPlaylist(String playlist) {
+        while (true) {
+            List<Song> songs = libraryModel.getSongsOfPlaylist(playlist);
+            if (songs.isEmpty()) {
+                System.out.println("Playlist is empty");
+            }
+            System.out.println("Choose a song to remove from " + playlist);
+            for (int i = 0; i < songs.size(); i++) {
+                System.out.println("[" + (i + 1) + "] - " + songs.get(i).toString());
+            }
+            printBackOrExitMessege();
+            int command = getUserInput(songs.size());
+            if (command == 0) {
+                break;
+            } else if (command >= 1 && command <= songs.size()) {
+                libraryModel.removeSongToPlayList(playlist, songs.get(command - 1));
+                System.out.println("The song was removed from " + playlist);
+            }
+        }
+    }
+
     private void searchAlbumsInLibrary() {
         while (true) {
             System.out.println("How would like to search for an album");
             System.out.println("[1] - By title");
             System.out.println("[2] - By artist");
+            System.out.println("[3] - Get all");
             printBackOrExitMessege();
-            int command = getUserInput(1, 2);
+            int command = getUserInput(3);
             if (command == 0) {
                 break;
             } else if (command == 1) {
                 handleAlbumsSearchInLibrary(searchAlbumsInLibraryByTitle());
             } else if (command == 2) {
                 handleAlbumsSearchInLibrary(searchAlbumsInLibraryByArtist());
+            } else if (command == 3) {
+                handleAlbumsSearchInLibrary(libraryModel.getAllAlbums());
             }
         }
     }
-    
+
     private void handleAlbumsSearchInLibrary(List<Album> searchResult) {
-        while (true) {
-            if (searchResult.isEmpty()) {
-                System.out.println("No albums were found");
-                break;
-            }
+        if (searchResult.isEmpty()) {
+            System.out.println("No albums were found");
+        } else {
             System.out.println("Here are the albums for your search");
 
-            for (int i = 0; i < searchResult.size(); i++) {
-                System.out.println(searchResult.get(i).toString());
+            for (Album album : searchResult) {
+                System.out.println(album.toString());
                 System.out.println("\tSongs:");
-                for(Song s : searchResult.get(i).getSongs()){
-                    System.out.println("\t\t"+s.toString());
+                for (Song s : album.getSongs()) {
+                    System.out.println("\t\t" + s.toString());
                 }
             }
-            break;
         }
-        printBackOrExitMessege();
     }
-    
+
     private void handleSongsSearchInLibrary(List<Song> searchResult) {
         while (true) {
             if (searchResult.isEmpty()) {
@@ -288,14 +352,24 @@ public class View {
             }
             System.out.println("Here are the songs for your search");
 
+            System.out.println("Which song to rate/favorite/unfavorite/add to playlist?");
+
             for (int i = 0; i < searchResult.size(); i++) {
-                System.out.println(searchResult.get(i).toString());
+                System.out.println("[" + (i + 1) + "] - " + searchResult.get(i).toString());
             }
-            break;
+
+            printBackOrExitMessege();
+            int command = getUserInput(searchResult.size());
+
+            if (command == 0) {
+                break;
+            } else if (command >= 1 && command <= searchResult.size()) {
+                Song selectedSong = searchResult.get(command - 1);
+                actionOnSongInLibrary(selectedSong);
+            }
         }
-        printBackOrExitMessege();
     }
-    
+
     private List<Album> searchAlbumsInLibraryByTitle() {
         System.out.println("Enter the title of the album");
         String input = scanner.nextLine();
@@ -307,7 +381,7 @@ public class View {
         String input = scanner.nextLine();
         return libraryModel.getAlbumsByArtist(input);
     }
-    
+
     private List<Song> searchSongsInLibraryByTitle() {
         System.out.println("Enter the title of the song");
         String input = scanner.nextLine();
@@ -320,17 +394,109 @@ public class View {
         return libraryModel.getSongsByArtist(input);
     }
 
+    private void actionOnSongInLibrary(Song song) {
+        while (true) {
+            System.out.println("What would you like to do on song " + song.getTitle() + "?");
+            System.out.println("[1] - Rate");
+            System.out.println("[2] - Mark as favorite");
+            System.out.println("[3] - Unmark as favorite");
+            System.out.println("[4] - Add to a playlist");
+            printBackOrExitMessege();
+            int command = getUserInput(4);
+            if (command == 0) {
+                break;
+            } else if (command == 1) {
+                rateSong(song);
+            } else if (command == 2) {
+                libraryModel.markSongFavorite(song);
+                System.out.println("Song " + song.getTitle() + " marked as favorite");
+            } else if (command == 3) {
+                libraryModel.markSongUnFavorite(song);
+                System.out.println("Song " + song.getTitle() + " unmarked as favorite");
+            } else if (command == 4) {
+                handleAddSongToPlaylist(song);
+            }
+        }
+    }
+
+    private void rateSong(Song song) {
+        System.out.println("What would you rate the song " + song.getTitle() + " from 1 to 5?");
+        String input = scanner.nextLine();
+        int rate;
+        try {
+            rate = Integer.parseInt(input);
+            libraryModel.rateSong(song, rate);
+        } catch (NumberFormatException e) {
+            System.out.println("Rating must be a number");
+            return;
+        } catch (IllegalAccessException e) {
+            System.out.println("Rating must be a number from 1 to 5");
+            return;
+        }
+        System.out.println("Rating " + input + " saved for " + song.getTitle());
+    }
+
+    private void handleAddSongToPlaylist(Song song) {
+        while (true) {
+            String selectedPlaylist = choosePlaylistFromAll();
+            if (selectedPlaylist.isEmpty()) {
+                break;
+            }
+            libraryModel.addSongToPlayList(selectedPlaylist, song);
+            System.out.println("The song " + song.getTitle() + " was added to the playlist " + selectedPlaylist);
+        }
+    }
+
+    public void createPlaylist() {
+        System.out.println("What is the name of the new playlist?");
+        String input = scanner.nextLine();
+        if (input.isEmpty()) {
+            System.out.println("Playlist name can't be empty");
+        } else if (libraryModel.isPlaylistExist(input)) {
+            System.out.println("Playlist name " + input + " already exist");
+        } else {
+            libraryModel.createPlaylist(input);
+            System.out.println("Playlist " + input + " was created");
+        }
+    }
+
+    /**
+     * Let the user to choose a playlist.
+     * If no playlist was chosen, return empty string
+     *
+     * @return name of a playlist or empty string
+     */
+    private String choosePlaylistFromAll() {
+        List<String> playlists = libraryModel.getAllPlaylistsNames();
+        if (playlists.isEmpty()) {
+            System.out.println("You have no playlists");
+            return "";
+        }
+        System.out.println("Choose a playlist");
+        for (int i = 0; i < playlists.size(); i++) {
+            System.out.println("[" + (i + 1) + "] - " + playlists.get(i));
+        }
+        printBackOrExitMessege();
+        int command = getUserInput(playlists.size());
+
+        if (command == 0) {
+            return "";
+        } else if (command >= 1 && command <= playlists.size()) {
+            return playlists.get(command - 1);
+        }
+        return "";
+    }
+
     /**
      * Get command from the user and return the number of the command.
      * 0 means to go back
      * -1 means invalid command
      * any other number is the command
      *
-     * @param min the min number of command
      * @param max the max number of command
      * @return a number representing the command from the user
      */
-    private int getUserInput(int min, int max) {
+    private int getUserInput(int max) {
         String input = scanner.nextLine();
 
         // the user wants to exit the program
@@ -345,20 +511,20 @@ public class View {
         int command;
         try {
             command = Integer.parseInt(input);
-            if (command < min || command > max) {
-                printInputErrorMessage(min, max);
+            if (command < 1 || command > max) {
+                printInputErrorMessage(max);
                 return -1;
             }
 
             return command;
         } catch (NumberFormatException e) {
-            printInputErrorMessage(min, max);
+            printInputErrorMessage(max);
             return -1;
         }
     }
 
-    private void printInputErrorMessage(int min, int max) {
-        System.out.println("The input can only be a number between " + min + " - " + max + ", '"
+    private void printInputErrorMessage(int max) {
+        System.out.println("The input can only be a number between " + 1 + " - " + max + ", '"
                 + EXIT_COMMAND + "' to exit, or '" + BACK_COMMAND + "' to go back a menu");
     }
 
