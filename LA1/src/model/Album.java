@@ -10,12 +10,12 @@ public class Album {
     private final String year;
     private final List<Song> songs;
 
-    public Album(String t, String a, String g, String y, ArrayList<Song> s) {
-        title = t;
-        artist = a;
-        genre = g;
-        year = y;
-        songs = s;
+    public Album(String title, String artist, String genre, String year, List<Song> songs) {
+        this.title = title;
+        this.artist = artist;
+        this.genre = genre;
+        this.year = year;
+        this.songs = new ArrayList<Song>(songs);
     }
 
 
