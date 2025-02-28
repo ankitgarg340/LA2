@@ -64,15 +64,13 @@ public class View {
             System.out.println("[2] - By artist");
             printBackOrExitMessege();
             int command = getUserInput(1, 2);
-            List<Song> searchResult = null;
             if (command == 0) {
                 break;
             } else if (command == 1) {
-                searchResult = searchSongsInStoreByTitle();
+                handleSongsSearchInStore(searchSongsInStoreByTitle());
             } else if (command == 2) {
-                searchResult = searchSongsInStoreByArtist();
+                handleSongsSearchInStore(searchSongsInStoreByArtist());
             }
-            int a = 0;
         }
     }
 
@@ -86,6 +84,31 @@ public class View {
         System.out.println("Enter the artist of the song");
         String input = scanner.nextLine();
         return musicStore.getSongByArtist(input);
+    }
+
+    private void handleSongsSearchInStore(List<Song> searchResult) {
+        while(true) {
+            if (searchResult.isEmpty()){
+                System.out.println("No songs were found");
+                break;
+            }
+            System.out.println("Here are the songs for your search");
+            System.out.println("Which song would you like to like to add to your library?");
+
+            for(int i = 0; i<searchResult.size();i++){
+                System.out.println("["+(i+1)+"] - "+searchResult.get(i).toString());
+            }
+            printBackOrExitMessege();
+            int command = getUserInput(1, searchResult.size());
+
+            if (command == 0) {
+                break;
+            } else if (command >= 1 && command<=searchResult.size()) {
+                Song selectedSong = searchResult.get(command-1);
+                libraryModel.addSong(selectedSong);
+                System.out.println("The song "+ selectedSong.toString()+" is in your library");
+            }
+        }
     }
 
     private void libraryCommands() {

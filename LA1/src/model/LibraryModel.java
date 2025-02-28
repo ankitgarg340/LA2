@@ -15,7 +15,9 @@ public class LibraryModel {
     }
 
     public void addSong(Song s) {
-        songs.add(new SongInLibrary(s));
+        if (!containSong(s)) {
+            songs.add(new SongInLibrary(s));
+        }
     }
 
     public boolean containSong(Song song) {
