@@ -16,15 +16,7 @@ public class Song {
 	}
 	
 	public String toString() {
-		String song = title + " by " + artist + " in album " + albumName;
-		return song;
-	}
-	
-	public void printSong() {
-		System.out.println("song title: " + title);
-		System.out.println("artist: " + artist);
-		System.out.println("album: " + albumName);
-		System.out.println();
+        return title + " by " + artist + " in album " + albumName;
 	}
 
 	public String getArtist() {

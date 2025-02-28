@@ -61,7 +61,6 @@ public class MusicStore {
 		for(Album a : this.getAlbums()) {
 			for(Song s : a.getSongs()) {
 				if(s.getTitle().equals(title)) {
-					s.printSong();
 					returnList.add(s);
 				}
 			}
@@ -76,7 +75,6 @@ public class MusicStore {
 		for(Album a : this.getAlbums()) {
 			for(Song s : a.getSongs()) {
 				if(s.getArtist().equals(artist)) {
-					s.printSong();
 					returnList.add(s);
 				}
 			}
@@ -90,7 +88,6 @@ public class MusicStore {
 		
 		for(Album a : this.getAlbums()) {
 			if(a.getTitle().equals(album)) {
-				a.printAlbum();
 				returnList.add(a);
 			}
 		}
@@ -103,7 +100,6 @@ public class MusicStore {
 		
 		for(Album a : this.getAlbums()) {
 			if(a.getArtist().equals(artist)) {
-				a.printAlbum();
 				returnList.add(a);
 			}
 		}
