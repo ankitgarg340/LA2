@@ -25,7 +25,9 @@ public class LibraryModel {
     }
 
     public void addAlbum(Album album) {
-        albums.add(album);
+        if (!albums.contains(album)) {
+            albums.add(album);
+        }
         for (Song song : album.getSongs()) {
             if (!containSong(song)) {
                 addSong(song);
@@ -59,11 +61,11 @@ public class LibraryModel {
         return returnPlaylistsNames;
     }
 
-    public void rateSong(Song s, int rating) throws IllegalAccessException {
+    public void rateSong(Song s, int rating) throws IllegalArgumentException {
         SongInLibrary sil = getSongInLibraryFromSong(s);
         if (sil != null) {
             if (rating < 1 || rating > 5) {
-                throw new IllegalAccessException("bad rating");
+                throw new IllegalArgumentException("bad rating");
             }
             sil.rate(rating);
 
@@ -97,13 +99,20 @@ public class LibraryModel {
     }
 
     public List<Song> getSongsOfPlaylist(String playlistName) {
-        return getPlaylistFromName(playlistName).getSongs();
+        Playlist p = getPlaylistFromName(playlistName);
+        if (p == null) {
+            return null;
+        } else {
+            return p.getSongs();
+        }
     }
 
     public void addSongToPlayList(String playlistName, Song song) {
         if (containSong(song)) {
             Playlist playlist = getPlaylistFromName(playlistName);
-            playlist.addSong(song);
+            if (playlist != null) {
+                playlist.addSong(song);
+            }
         }
     }
 
@@ -182,7 +191,11 @@ public class LibraryModel {
     }
 
     public int getSongRating(Song song) {
-        return getSongInLibraryFromSong(song).getRating();
+        SongInLibrary sil = getSongInLibraryFromSong(song);
+        if (sil == null) {
+            return -1;
+        }
+        return sil.getRating();
     }
 
     private SongInLibrary getSongInLibraryFromSong(Song s) {

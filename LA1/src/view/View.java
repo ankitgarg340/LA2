@@ -436,7 +436,7 @@ public class View {
         } catch (NumberFormatException e) {
             System.out.println("Rating must be a number");
             return;
-        } catch (IllegalAccessException e) {
+        } catch (IllegalArgumentException e) {
             System.out.println("Rating must be a number from 1 to 5");
             return;
         }
