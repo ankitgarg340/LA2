@@ -1,11 +1,8 @@
 package model;
-import java.io.File;
-import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.io.IOException;
 import java.lang.String;
 
 public class MusicStore {
@@ -65,7 +62,6 @@ public class MusicStore {
 		for(Album a : this.getAlbums()) {
 			for(Song s : a.getSongs()) {
 				if(s.getTitle().equals(title)) {
-					s.printSong();
 					returnList.add(s);
 				}
 			}
@@ -80,7 +76,6 @@ public class MusicStore {
 		for(Album a : this.getAlbums()) {
 			for(Song s : a.getSongs()) {
 				if(s.getArtist().equals(artist)) {
-					s.printSong();
 					returnList.add(s);
 				}
 			}
@@ -94,7 +89,6 @@ public class MusicStore {
 		
 		for(Album a : this.getAlbums()) {
 			if(a.getTitle().equals(album)) {
-				a.printAlbum();
 				returnList.add(a);
 			}
 		}
@@ -107,7 +101,6 @@ public class MusicStore {
 		
 		for(Album a : this.getAlbums()) {
 			if(a.getArtist().equals(artist)) {
-				a.printAlbum();
 				returnList.add(a);
 			}
 		}

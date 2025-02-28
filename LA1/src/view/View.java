@@ -1,8 +1,11 @@
 package view;
 
+import model.Album;
 import model.LibraryModel;
 import model.MusicStore;
+import model.Song;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class View {
@@ -48,13 +51,124 @@ public class View {
             if (command == 0) {
                 break;
             } else if (command == 1) {
-                int a = 0;
+                searchSongsInStore();
             } else if (command == 2) {
-                int a = 0;
+                searchAlbumInStore();
             }
-
         }
     }
+
+    private void searchSongsInStore() {
+        while (true) {
+            System.out.println("How would like to search for a song");
+            System.out.println("[1] - By title");
+            System.out.println("[2] - By artist");
+            printBackOrExitMessege();
+            int command = getUserInput(1, 2);
+            if (command == 0) {
+                break;
+            } else if (command == 1) {
+                handleSongsSearchInStore(searchSongsInStoreByTitle());
+            } else if (command == 2) {
+                handleSongsSearchInStore(searchSongsInStoreByArtist());
+            }
+        }
+    }
+
+    private List<Song> searchSongsInStoreByTitle() {
+        System.out.println("Enter the title of the song");
+        String input = scanner.nextLine();
+        return musicStore.getSongByTitle(input);
+    }
+
+    private List<Song> searchSongsInStoreByArtist() {
+        System.out.println("Enter the artist of the song");
+        String input = scanner.nextLine();
+        return musicStore.getSongByArtist(input);
+    }
+
+    private void handleSongsSearchInStore(List<Song> searchResult) {
+        while (true) {
+            if (searchResult.isEmpty()) {
+                System.out.println("No songs were found");
+                break;
+            }
+            System.out.println("Here are the songs for your search");
+            System.out.println("Which song would you like to like to add to your library?");
+
+            for (int i = 0; i < searchResult.size(); i++) {
+                System.out.println("[" + (i + 1) + "] - " + searchResult.get(i).toString());
+            }
+            printBackOrExitMessege();
+            int command = getUserInput(1, searchResult.size());
+
+            if (command == 0) {
+                break;
+            } else if (command >= 1 && command <= searchResult.size()) {
+                Song selectedSong = searchResult.get(command - 1);
+                libraryModel.addSong(selectedSong);
+                System.out.println("The song " + selectedSong.toString() + " is in your library");
+            }
+        }
+    }
+
+    private void searchAlbumInStore() {
+        while (true) {
+            System.out.println("How would like to search for an album");
+            System.out.println("[1] - By title");
+            System.out.println("[2] - By artist");
+            printBackOrExitMessege();
+            int command = getUserInput(1, 2);
+            if (command == 0) {
+                break;
+            } else if (command == 1) {
+                handleAlbumsSearchInStore(searchAlbumsInStoreByTitle());
+            } else if (command == 2) {
+                handleAlbumsSearchInStore(searchAlbumsInStoreByArtist());
+            }
+        }
+    }
+
+    private List<Album> searchAlbumsInStoreByTitle() {
+        System.out.println("Enter the title of the album");
+        String input = scanner.nextLine();
+        return musicStore.getAlbumByTitle(input);
+    }
+
+    private List<Album> searchAlbumsInStoreByArtist() {
+        System.out.println("Enter the artist of the album");
+        String input = scanner.nextLine();
+        return musicStore.getAlbumByArtist(input);
+    }
+
+    private void handleAlbumsSearchInStore(List<Album> searchResult) {
+        while (true) {
+            if (searchResult.isEmpty()) {
+                System.out.println("No albums were found");
+                break;
+            }
+            System.out.println("Here are the albums for your search");
+            System.out.println("Which album would you like to like to add to your library?");
+
+            for (int i = 0; i < searchResult.size(); i++) {
+                System.out.println("[" + (i + 1) + "] - " + searchResult.get(i).toString());
+                System.out.println("\tSongs:");
+                for(Song s : searchResult.get(i).getSongs()){
+                    System.out.println("\t\t"+s.toString());
+                }
+            }
+            printBackOrExitMessege();
+            int command = getUserInput(1, searchResult.size());
+            if (command == 0) {
+                break;
+            } else if (command >= 1 && command <= searchResult.size()) {
+                Album selectedAlbum = searchResult.get(command - 1);
+                libraryModel.addAlbum(selectedAlbum);
+                System.out.println("The album " + selectedAlbum.toString() + " is in your library");
+            }
+        }
+    }
+
 
     private void libraryCommands() {
         while (true) {
