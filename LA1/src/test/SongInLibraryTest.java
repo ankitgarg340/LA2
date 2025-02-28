@@ -84,4 +84,10 @@ public class SongInLibraryTest {
         assertEquals(rate, sil.getRating());
     }
 
+    @Test
+    public void testGetSong() {
+        SongInLibrary sil = new SongInLibrary(s1);
+        assertEquals(s1, sil.getSong());
+    }
+
 }
