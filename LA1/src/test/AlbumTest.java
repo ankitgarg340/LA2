@@ -1,7 +1,6 @@
 package test;
 
 import model.Album;
-import model.MusicStore;
 import model.Song;
 import org.junit.jupiter.api.Test;
 
@@ -16,9 +15,7 @@ public class AlbumTest {
 
     Song s1 = new Song("s1", "a", "album");
     Song s2 = new Song("s2", "a", "album");
-    ;
     Song s3 = new Song("s3", "a", "album");
-    ;
 
     @Test
     public void testGetTitle() {

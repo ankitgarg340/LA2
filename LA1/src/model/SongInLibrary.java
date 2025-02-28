@@ -8,7 +8,6 @@ public class SongInLibrary {
     public SongInLibrary(Song s) {
         song = s;
         isFavorite = false;
-        rating = 0;
     }
 
     public Song getSong() {
