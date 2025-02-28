@@ -29,4 +29,8 @@ public class SongInLibrary {
     public boolean isFavorite() {
         return isFavorite;
     }
+
+    public int getRating() {
+        return rating;
+    }
 }

@@ -214,7 +214,7 @@ public class View {
             } else if (command == 1) {
                 handleSongsSearchInLibrary(searchSongsInLibraryByTitle());
             } else if (command == 2) {
-                handleSongsSearchInLibrary(searchSongsInLibrayByArtist());
+                handleSongsSearchInLibrary(searchSongsInLibraryByArtist());
             } else if (command == 3) {
                 handleSongsSearchInLibrary(libraryModel.getAllSongs());
             } else if (command == 4) {
@@ -351,7 +351,6 @@ public class View {
                 break;
             }
             System.out.println("Here are the songs for your search");
-
             System.out.println("Which song to rate/favorite/unfavorite/add to playlist?");
 
             for (int i = 0; i < searchResult.size(); i++) {
@@ -388,7 +387,7 @@ public class View {
         return libraryModel.getSongsByTitle(input);
     }
 
-    private List<Song> searchSongsInLibrayByArtist() {
+    private List<Song> searchSongsInLibraryByArtist() {
         System.out.println("Enter the artist of the song");
         String input = scanner.nextLine();
         return libraryModel.getSongsByArtist(input);
@@ -398,22 +397,30 @@ public class View {
         while (true) {
             System.out.println("What would you like to do on song " + song.getTitle() + "?");
             System.out.println("[1] - Rate");
-            System.out.println("[2] - Mark as favorite");
-            System.out.println("[3] - Unmark as favorite");
-            System.out.println("[4] - Add to a playlist");
+            System.out.println("[2] - View rating");
+            System.out.println("[3] - Mark as favorite");
+            System.out.println("[4] - Unmark as favorite");
+            System.out.println("[5] - Add to a playlist");
             printBackOrExitMessege();
-            int command = getUserInput(4);
+            int command = getUserInput(5);
             if (command == 0) {
                 break;
             } else if (command == 1) {
                 rateSong(song);
             } else if (command == 2) {
+                int rating = libraryModel.getSongRating(song);
+                if(rating == 0){
+                    System.out.println(song.getTitle() + " has no rating");
+                } else{
+                    System.out.println(song.getTitle() + " rating is "+rating);
+                }
+            }else if (command == 3) {
                 libraryModel.markSongFavorite(song);
                 System.out.println("Song " + song.getTitle() + " marked as favorite");
-            } else if (command == 3) {
+            } else if (command == 4) {
                 libraryModel.markSongUnFavorite(song);
                 System.out.println("Song " + song.getTitle() + " unmarked as favorite");
-            } else if (command == 4) {
+            } else if (command == 5) {
                 handleAddSongToPlaylist(song);
             }
         }

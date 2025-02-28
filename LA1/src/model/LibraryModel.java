@@ -110,12 +110,14 @@ public class LibraryModel {
     public void removeSongToPlayList(String playlistName, Song song) {
         if (containSong(song)) {
             Playlist playlist = getPlaylistFromName(playlistName);
-            playlist.removeSong(song);
+            if (playlist != null) {
+                playlist.removeSong(song);
+            }
         }
     }
 
     public List<Song> getSongsByTitle(String title) {
-        ArrayList<Song> returnList = new ArrayList<Song>();
+        ArrayList<Song> returnList = new ArrayList<>();
 
         for (SongInLibrary sil : songs) {
             if (sil.getSong().getTitle().equals(title)) {
@@ -127,7 +129,7 @@ public class LibraryModel {
     }
 
     public List<Song> getSongsByArtist(String artist) {
-        ArrayList<Song> returnList = new ArrayList<Song>();
+        ArrayList<Song> returnList = new ArrayList<>();
 
         for (SongInLibrary sil : songs) {
             if (sil.getSong().getArtist().equals(artist)) {
@@ -139,7 +141,7 @@ public class LibraryModel {
     }
 
     public List<Song> getFavoriteSongs() {
-        ArrayList<Song> returnList = new ArrayList<Song>();
+        ArrayList<Song> returnList = new ArrayList<>();
 
         for (SongInLibrary sil : songs) {
             if (sil.isFavorite()) {
@@ -152,7 +154,7 @@ public class LibraryModel {
 
 
     public List<Album> getAlbumsByTitle(String album) {
-        ArrayList<Album> returnList = new ArrayList<Album>();
+        ArrayList<Album> returnList = new ArrayList<>();
 
         for (Album a : albums) {
             if (a.getTitle().equals(album)) {
@@ -164,7 +166,7 @@ public class LibraryModel {
     }
 
     public List<Album> getAlbumsByArtist(String artist) {
-        ArrayList<Album> returnList = new ArrayList<Album>();
+        ArrayList<Album> returnList = new ArrayList<>();
 
         for (Album a : albums) {
             if (a.getArtist().equals(artist)) {
@@ -177,6 +179,10 @@ public class LibraryModel {
 
     public boolean isPlaylistExist(String name) {
         return getPlaylistFromName(name) != null;
+    }
+
+    public int getSongRating(Song song) {
+        return getSongInLibraryFromSong(song).getRating();
     }
 
     private SongInLibrary getSongInLibraryFromSong(Song s) {

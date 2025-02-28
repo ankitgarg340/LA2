@@ -67,4 +67,21 @@ public class SongInLibraryTest {
         sil.markUnFavorite();
         assertFalse(sil.isFavorite());
     }
+
+    @Test
+    public void testGetRatingNoRating() {
+        // The logic of making a song favorite should not be in this class
+        SongInLibrary sil = new SongInLibrary(s1);
+        assertEquals(0, sil.getRating());
+    }
+
+    @Test
+    public void testGetRatingAfterRating() {
+        // The logic of making a song favorite should not be in this class
+        SongInLibrary sil = new SongInLibrary(s1);
+        int rate = 4;
+        sil.rate(rate);
+        assertEquals(rate, sil.getRating());
+    }
+
 }

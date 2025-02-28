@@ -15,12 +15,12 @@ public class Album {
         this.artist = artist;
         this.genre = genre;
         this.year = year;
-        this.songs = new ArrayList<Song>(songs);
+        this.songs = new ArrayList<>(songs);
     }
 
 
-    public ArrayList<Song> getSongs() {
-        return new ArrayList<Song>(this.songs);
+    public List<Song> getSongs() {
+        return new ArrayList<>(this.songs);
     }
 
     public String getTitle() {

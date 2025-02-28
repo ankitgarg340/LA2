@@ -11,7 +11,7 @@ public class MusicStore {
     private final List<Album> albums;
 
     public MusicStore() {
-        albums = new ArrayList<Album>();
+        albums = new ArrayList<>();
     }
 
     public void readFile(String file) throws IOException {
@@ -22,7 +22,7 @@ public class MusicStore {
             String albumFile = albumLine[0] + "_" + albumLine[1] + ".txt";
             BufferedReader brAlbum = new BufferedReader(new FileReader(albumFile));
 
-            ArrayList<Song> songs = new ArrayList<Song>();
+            ArrayList<Song> songs = new ArrayList<>();
 
             String albumFileLine = brAlbum.readLine();
             String[] albumInfo = albumFileLine.split(",");
@@ -41,13 +41,13 @@ public class MusicStore {
         br.close();
     }
 
-    public ArrayList<Album> getAlbums() {
-        return new ArrayList<Album>(this.albums);
+    public List<Album> getAlbums() {
+        return new ArrayList<>(this.albums);
     }
 
 
-    public ArrayList<Song> getSongByTitle(String title) {
-        ArrayList<Song> returnList = new ArrayList<Song>();
+    public List<Song> getSongByTitle(String title) {
+        ArrayList<Song> returnList = new ArrayList<>();
 
         for (Album a : this.getAlbums()) {
             for (Song s : a.getSongs()) {
@@ -60,8 +60,8 @@ public class MusicStore {
         return returnList;
     }
 
-    public ArrayList<Song> getSongByArtist(String artist) {
-        ArrayList<Song> returnList = new ArrayList<Song>();
+    public List<Song> getSongByArtist(String artist) {
+        ArrayList<Song> returnList = new ArrayList<>();
 
         for (Album a : this.getAlbums()) {
             for (Song s : a.getSongs()) {
@@ -74,8 +74,8 @@ public class MusicStore {
         return returnList;
     }
 
-    public ArrayList<Album> getAlbumByTitle(String album) {
-        ArrayList<Album> returnList = new ArrayList<Album>();
+    public List<Album> getAlbumByTitle(String album) {
+        ArrayList<Album> returnList = new ArrayList<>();
 
         for (Album a : this.getAlbums()) {
             if (a.getTitle().equals(album)) {
@@ -86,8 +86,8 @@ public class MusicStore {
         return returnList;
     }
 
-    public ArrayList<Album> getAlbumByArtist(String artist) {
-        ArrayList<Album> returnList = new ArrayList<Album>();
+    public List<Album> getAlbumByArtist(String artist) {
+        ArrayList<Album> returnList = new ArrayList<>();
 
         for (Album a : this.getAlbums()) {
             if (a.getArtist().equals(artist)) {
