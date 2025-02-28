@@ -5,6 +5,7 @@ import model.LibraryModel;
 import model.MusicStore;
 import model.Song;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -21,7 +22,12 @@ public class View {
         libraryModel = new LibraryModel();
 
         scanner = new Scanner(System.in);
-        musicStore.readFile(dataFile);
+        try {
+            musicStore.readFile(dataFile);
+        } catch (IOException e) {
+            System.out.println("Could not load data from file with error msg - "+e.getMessage());
+            System.exit(1);
+        }
     }
 
     public void start() {
