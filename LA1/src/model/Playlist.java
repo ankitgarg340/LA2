@@ -17,6 +17,7 @@ public class Playlist {
     }
 
     public void addSong(Song s) {
+        // if a song is already in the playlist, don't add it again
         if (!songs.contains(s)) {
             songs.add(s);
         }
