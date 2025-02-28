@@ -292,6 +292,7 @@ public class View {
             List<Song> songs = libraryModel.getSongsOfPlaylist(playlist);
             if (songs.isEmpty()) {
                 System.out.println("Playlist is empty");
+                break;
             }
             System.out.println("Choose a song to remove from " + playlist);
             for (int i = 0; i < songs.size(); i++) {
