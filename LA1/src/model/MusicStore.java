@@ -14,6 +14,11 @@ public class MusicStore {
         albums = new ArrayList<>();
     }
 
+    /**
+     * Read the albums, create their songs, and add the albums
+     * @param file all the albums to read
+     * @throws IOException if could not read the albums file or any specific album file
+     */
     public void readFile(String file) throws IOException {
         BufferedReader br = new BufferedReader(new FileReader(file));
         String line;
@@ -101,5 +106,4 @@ public class MusicStore {
     private void addAlbum(Album a) {
         albums.add(a);
     }
-
 }
