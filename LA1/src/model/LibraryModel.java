@@ -28,7 +28,11 @@ public class LibraryModel {
         if (!albums.contains(album)) {
             albums.add(album);
         }
+
+        // add the songs of the album
         for (Song song : album.getSongs()) {
+
+            // skip song if it was added before
             if (!containSong(song)) {
                 addSong(song);
             }

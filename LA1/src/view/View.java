@@ -93,6 +93,11 @@ public class View {
         return musicStore.getSongByArtist(input);
     }
 
+    /**
+     * Get a list of songs from the store to allow the user to choose which one he would
+     * like to add to the library
+     * @param searchResult list of songs
+     */
     private void handleSongsSearchInStore(List<Song> searchResult) {
         while (true) {
             if (searchResult.isEmpty()) {
@@ -147,6 +152,11 @@ public class View {
         return musicStore.getAlbumByArtist(input);
     }
 
+    /**
+     * Get a list of albums from the store to allow the user to choose which one he would
+     * like to add to the library
+     * @param searchResult list of albums
+     */
     private void handleAlbumsSearchInStore(List<Album> searchResult) {
         while (true) {
             if (searchResult.isEmpty()) {
@@ -243,6 +253,8 @@ public class View {
     private void handlePlaylistSearchByNameInLibrary() {
         System.out.println("Enter the title of the playlist: ");
         String input = scanner.nextLine();
+
+        // if no playlist exist for that name, don't go to the screen of actions on playlist
         if (!libraryModel.isPlaylistExist(input)) {
             System.out.println("Playlist doesn't exist with that name");
         } else {
@@ -253,6 +265,8 @@ public class View {
     private void handlePlaylistSearchInLibrary() {
         while (true) {
             String selectedPlaylist = choosePlaylistFromAll();
+
+            // if selectedPlaylist, meaning no playlist was selected
             if (selectedPlaylist.isEmpty()) {
                 break;
             }
@@ -447,6 +461,7 @@ public class View {
     private void handleAddSongToPlaylist(Song song) {
         while (true) {
             String selectedPlaylist = choosePlaylistFromAll();
+            // if no playlist was selected
             if (selectedPlaylist.isEmpty()) {
                 break;
             }
@@ -455,7 +470,7 @@ public class View {
         }
     }
 
-    public void createPlaylist() {
+    private void createPlaylist() {
         System.out.println("What is the name of the new playlist?");
         String input = scanner.nextLine();
         if (input.isEmpty()) {
@@ -471,7 +486,6 @@ public class View {
     /**
      * Let the user to choose a playlist.
      * If no playlist was chosen, return empty string
-     *
      * @return name of a playlist or empty string
      */
     private String choosePlaylistFromAll() {
@@ -497,9 +511,10 @@ public class View {
 
     /**
      * Get command from the user and return the number of the command.
-     * 0 means to go back
+     * The input can only be number between 1 to max,
+     * the value of EXIT_COMMAND which will exit the program
+     * or BACK_COMMAND which will return 0
      * -1 means invalid command
-     * any other number is the command
      *
      * @param max the max number of command
      * @return a number representing the command from the user
