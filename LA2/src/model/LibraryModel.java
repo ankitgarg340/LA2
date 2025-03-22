@@ -1,5 +1,8 @@
 package model;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import java.util.List;
 import java.util.ArrayList;
 
@@ -67,7 +70,8 @@ public class LibraryModel {
 
     /**
      * Give a rating for a song from 1 to 5, if a song is not in the library, don't do anything
-     * @param s a song
+     *
+     * @param s      a song
      * @param rating the rating for the song
      * @throws IllegalArgumentException if rating < 1 || rating > 5
      */
@@ -110,6 +114,7 @@ public class LibraryModel {
 
     /**
      * Get the list of the songs in the playlist.
+     *
      * @param playlistName name of the playlist
      * @return list of songs in the playlist, null if there is no playlist for the given name
      */
@@ -124,8 +129,9 @@ public class LibraryModel {
 
     /**
      * Add a song for a playlist if the playlist exist and the song is in the library
+     *
      * @param playlistName name of the playlist
-     * @param song song to add to playlist
+     * @param song         song to add to playlist
      */
     public void addSongToPlayList(String playlistName, Song song) {
         if (containSong(song)) {
@@ -138,8 +144,9 @@ public class LibraryModel {
 
     /**
      * Remove a song for a playlist if the playlist exist and the song is in the library
+     *
      * @param playlistName name of the playlist
-     * @param song song to remove from playlist
+     * @param song         song to remove from playlist
      */
     public void removeSongToPlayList(String playlistName, Song song) {
         if (containSong(song)) {
@@ -217,6 +224,7 @@ public class LibraryModel {
 
     /**
      * Return the rating of a song
+     *
      * @param song song to get its rating
      * @return the rating of a song, -1 if the song is not in the library
      */
@@ -226,6 +234,11 @@ public class LibraryModel {
             return -1;
         }
         return sil.getRating();
+    }
+
+    public LibraryModel makeCopy() {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        return gson.fromJson(gson.toJson(this), getClass());
     }
 
     private SongInLibrary getSongInLibraryFromSong(Song s) {

@@ -2,6 +2,7 @@ package db;
 
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.lang.reflect.Type;
@@ -34,16 +35,39 @@ public class DbJson implements IDb {
 
     @Override
     public LibraryModel getUserLibrary(String username, String password) throws IllegalArgumentException {
-        return null;
+        if(usersByUsername.containsKey(username)){
+            return usersByUsername.get(username).getUserLibrary();
+        }
+        else{
+            throw new IllegalArgumentException("User not exist or wrong password");
+        }
     }
 
     @Override
     public void createUser(String username, String password) throws IllegalArgumentException {
-
+        if(!usersByUsername.containsKey(username)){
+            usersByUsername.put(username, new User(username, password));
+        }
+        else{
+            throw new IllegalArgumentException("User already exist");
+        }
     }
 
     @Override
     public void updateUser(String username, String password, LibraryModel lib) throws IllegalArgumentException {
+        if(usersByUsername.containsKey(username)){
+            usersByUsername.get(username).setUserLibrary(lib);
+            saveUsers();
+        }
+        else{
+            throw new IllegalArgumentException("User not exist or wrong password");
+        }
+    }
 
+    private void saveUsers(){
+        try {
+            gson.toJson(usersByUsername, new FileWriter(FILE_PATH));
+        } catch (IOException e) {
+        }
     }
 }
