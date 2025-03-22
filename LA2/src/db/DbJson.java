@@ -1,14 +1,11 @@
 package db;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.HashMap;
+import java.io.*;
 import java.lang.reflect.Type;
+import java.util.HashMap;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+
 import com.google.gson.reflect.TypeToken;
 import model.LibraryModel;
 import model.User;
@@ -16,58 +13,67 @@ import model.User;
 
 public class DbJson implements IDb {
     private static final String FILE_PATH = "users.json";
-    private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    private Gson gson;
 
     private HashMap<String, User> usersByUsername;
 
     public DbJson() throws IOException {
+        gson = new Gson();
+        usersByUsername = new HashMap<>();
         File file = new File(FILE_PATH);
-        if(!file.exists()){
-            file.createNewFile();
-            usersByUsername = new HashMap<>();
+        if (!file.exists()) {
+            if (!file.createNewFile()) {
+                throw new IOException("Could not create db file");
+            }
+            saveUsers();
         } else {
-            FileReader reader = new FileReader(FILE_PATH);
-            Type userListType = new TypeToken<HashMap<String, User>>() {}.getType();
-            usersByUsername = gson.fromJson(reader, userListType);
+            loadUsers();
         }
 
     }
 
     @Override
     public LibraryModel getUserLibrary(String username, String password) throws IllegalArgumentException {
-        if(usersByUsername.containsKey(username)){
+        if (usersByUsername.containsKey(username)) {
             return usersByUsername.get(username).getUserLibrary();
-        }
-        else{
+        } else {
             throw new IllegalArgumentException("User not exist or wrong password");
         }
     }
 
     @Override
     public void createUser(String username, String password) throws IllegalArgumentException {
-        if(!usersByUsername.containsKey(username)){
+        if (!usersByUsername.containsKey(username)) {
             usersByUsername.put(username, new User(username, password));
-        }
-        else{
+            saveUsers();
+        } else {
             throw new IllegalArgumentException("User already exist");
         }
     }
 
     @Override
     public void updateUser(String username, String password, LibraryModel lib) throws IllegalArgumentException {
-        if(usersByUsername.containsKey(username)){
+        if (usersByUsername.containsKey(username)) {
             usersByUsername.get(username).setUserLibrary(lib);
             saveUsers();
-        }
-        else{
+        } else {
             throw new IllegalArgumentException("User not exist or wrong password");
         }
     }
 
-    private void saveUsers(){
-        try {
-            gson.toJson(usersByUsername, new FileWriter(FILE_PATH));
+    private void saveUsers() {
+        try (FileWriter writer = new FileWriter(FILE_PATH)) {
+            gson.toJson(usersByUsername, writer);
         } catch (IOException e) {
+        }
+    }
+
+    private void loadUsers() {
+        try (Reader reader = new FileReader(FILE_PATH)) {
+            Type usersType = new TypeToken<HashMap<String, User>>() {}.getType();
+            usersByUsername = gson.fromJson(reader, usersType);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

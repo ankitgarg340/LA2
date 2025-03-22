@@ -1,8 +1,5 @@
 package model;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 public class User {
     private final String username;
     private final String password;
@@ -11,6 +8,7 @@ public class User {
     public User(String username, String passwordHash) {
         this.username = username;
         this.password = passwordHash;
+        userLibrary = new LibraryModel();
     }
 
     public void setUserLibrary(LibraryModel lib){
@@ -19,5 +17,13 @@ public class User {
 
     public LibraryModel getUserLibrary(){
         return userLibrary.makeCopy();
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
     }
 }
