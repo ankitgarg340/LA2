@@ -10,9 +10,11 @@ public class LibraryModel {
     private final List<Playlist> playlists;
     private transient Playlist recentPlaylist;
     private transient Playlist frequentPlaylist;
+    private transient Playlist faivoritePlaylist;
 
     private transient final String RECENT_PLAYLIST_NAME = "Most Recent Played Songs";
     private transient final String FREQUENT_PLAYLIST_NAME = "Most Frequently Played Songs";
+    private transient final String FAVORITE_PLAYLIST_NAME = "Favorite Songs";
 
     public LibraryModel() {
         songs = new ArrayList<>();
@@ -20,6 +22,7 @@ public class LibraryModel {
         playlists = new ArrayList<>();
         recentPlaylist = new Playlist(RECENT_PLAYLIST_NAME);
         frequentPlaylist = new Playlist(FREQUENT_PLAYLIST_NAME);
+        faivoritePlaylist = new Playlist(FAVORITE_PLAYLIST_NAME);
     }
 
     public void addSong(Song s) {
@@ -77,6 +80,7 @@ public class LibraryModel {
         List<String> returnPlaylistsNames = getUserPlaylistsNames();
         returnPlaylistsNames.add(recentPlaylist.getName());
         returnPlaylistsNames.add(frequentPlaylist.getName());
+        returnPlaylistsNames.add(faivoritePlaylist.getName());
         return returnPlaylistsNames;
     }
 
@@ -99,6 +103,7 @@ public class LibraryModel {
             if (rating == 5) {
                 sil.markFavorite();
             }
+            initFavoritePlaylist();
         }
     }
 
@@ -106,6 +111,7 @@ public class LibraryModel {
         SongInLibrary sil = getSongInLibraryFromSong(s);
         if (sil != null) {
             sil.markFavorite();
+            initFavoritePlaylist();
         }
     }
 
@@ -113,6 +119,7 @@ public class LibraryModel {
         SongInLibrary sil = getSongInLibraryFromSong(s);
         if (sil != null) {
             sil.markUnFavorite();
+            initFavoritePlaylist();
         }
     }
 
@@ -122,6 +129,9 @@ public class LibraryModel {
         }
         if (name.equals(FREQUENT_PLAYLIST_NAME)) {
             return frequentPlaylist;
+        }
+        if (name.equals(FAVORITE_PLAYLIST_NAME)){
+            return faivoritePlaylist;
         }
         for (Playlist p : playlists) {
             if (p.getName().equals(name)) {
@@ -315,13 +325,15 @@ public class LibraryModel {
 
     public boolean isPlaylistAutomatic(String playlistName) {
         return playlistName.equals(RECENT_PLAYLIST_NAME) ||
-                playlistName.equals(FREQUENT_PLAYLIST_NAME);
+                playlistName.equals(FREQUENT_PLAYLIST_NAME) ||
+                playlistName.equals(FAVORITE_PLAYLIST_NAME);
 
     }
 
     public void initAutomaticPlaylists() {
         initRecentPlaylist();
         initFrequentPlaylist();
+        initFavoritePlaylist();
     }
 
     private void initRecentPlaylist() {
@@ -350,6 +362,17 @@ public class LibraryModel {
         for (SongInLibrary sortedSong : sorted_songs) {
             frequentPlaylist.addSong(sortedSong.getSong());
         }
+    }
 
+    private void initFavoritePlaylist() {
+        List<SongInLibrary> sorted_songs = songs.stream()
+                .filter(item -> item.isFavorite() || item.getRating() == 5)
+                .toList();
+
+        faivoritePlaylist = new Playlist(FAVORITE_PLAYLIST_NAME);
+
+        for (SongInLibrary sortedSong : sorted_songs) {
+            faivoritePlaylist.addSong(sortedSong.getSong());
+        }
     }
 }
