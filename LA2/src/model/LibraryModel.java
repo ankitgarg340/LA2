@@ -9,13 +9,18 @@ public class LibraryModel {
     private final List<SongInLibrary> songs;
     private final List<Album> albums;
     private final List<Playlist> playlists;
-    private transient RecentPlaylist recentPlaylist;
+    private transient Playlist recentPlaylist;
+    private transient Playlist frequentPlaylist;
+
+    private transient final String RECENT_PLAYLIST_NAME = "Most Recent Played Songs";
+    private transient final String FREQUENT_PLAYLIST_NAME = "Most Frequently Played Songs";
 
     public LibraryModel() {
         songs = new ArrayList<>();
         albums = new ArrayList<>();
         playlists = new ArrayList<>();
-        recentPlaylist = new RecentPlaylist();
+        recentPlaylist = new Playlist(RECENT_PLAYLIST_NAME);
+        frequentPlaylist = new Playlist(FREQUENT_PLAYLIST_NAME);
     }
 
     public void addSong(Song s) {
@@ -220,8 +225,7 @@ public class LibraryModel {
     }
 
     public boolean isPlaylistExist(String name) {
-        return getPlaylistFromName(name) != null ||
-                recentPlaylist.getName().equals(name);
+        return getPlaylistFromName(name) != null;
     }
 
     /**
@@ -258,7 +262,8 @@ public class LibraryModel {
 
         if (songInLibrary != null) {
             songInLibrary.play();
-            recentPlaylist.addSong(s);
+            initRecentPlaylist();
+            initFrequentPlaylist();
         }
     }
 
@@ -296,18 +301,36 @@ public class LibraryModel {
     }
 
     public void initAutomaticPlaylists() {
-        initMostRecentPlaylist();
+        initRecentPlaylist();
+        initFrequentPlaylist();
     }
 
-    private void initMostRecentPlaylist() {
+    private void initRecentPlaylist() {
         List<SongInLibrary> sorted_songs = songs.stream()
                 .filter(item -> item.getLastPlayed() != null)
                 .sorted(Comparator.comparing(SongInLibrary::getLastPlayed, Comparator.reverseOrder()))
                 .limit(10)
                 .toList();
 
-        for (int i = sorted_songs.size() - 1; i >= 0; i--) {
-            recentPlaylist.addSong(sorted_songs.get(i).getSong());
+        recentPlaylist = new Playlist(RECENT_PLAYLIST_NAME);
+
+        for (SongInLibrary sortedSong : sorted_songs) {
+            recentPlaylist.addSong(sortedSong.getSong());
         }
+    }
+
+    private void initFrequentPlaylist() {
+        List<SongInLibrary> sorted_songs = songs.stream()
+                .filter(item -> item.getPlayCounter() > 0)
+                .sorted(Comparator.comparing(SongInLibrary::getPlayCounter, Comparator.reverseOrder()))
+                .limit(10)
+                .toList();
+
+        frequentPlaylist = new Playlist(FREQUENT_PLAYLIST_NAME);
+
+        for (SongInLibrary sortedSong : sorted_songs) {
+            frequentPlaylist.addSong(sortedSong.getSong());
+        }
+
     }
 }
