@@ -42,6 +42,7 @@ public class View {
             System.out.println("Where would you like to perform actions?");
             System.out.println("[1] - Music store");
             System.out.println("[2] - Library");
+            //
             printBackOrExitMessege();
             int command = getUserInput(2);
             if (command == 0) {
