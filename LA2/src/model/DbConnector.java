@@ -29,12 +29,14 @@ public class DbConnector {
                     .filter(song -> song.getArtist().equals(s.getArtist()))
                     .findFirst();
 
-            if(sInStore.isPresent()) {
+            if (sInStore.isPresent()) {
                 libWithStoreInfo.addSong(sInStore.get());
 
                 // add rating
                 int rating = dbLib.getSongRating(s);
-                libWithStoreInfo.rateSong(sInStore.get(), rating);
+                if (rating >= 1 && rating <= 5) {
+                    libWithStoreInfo.rateSong(sInStore.get(), rating);
+                }
 
                 // edge case where a song is rated 5 but not favorite
                 if (rating == 5 && !dbLib.getFavoriteSongs().contains(s)) {
@@ -42,9 +44,9 @@ public class DbConnector {
                 }
 
                 // set plays tracking
-                int playsCount = dbLib.getSongPlaysCount(sInStore.get());
-                if(playsCount>0){
-                    Date d = dbLib.getSongLastPlayDate(sInStore.get());
+                int playsCount = dbLib.getSongPlaysCount(s);
+                if (playsCount > 0) {
+                    Date d = dbLib.getSongLastPlayDate(s);
                     libWithStoreInfo.setSongPlayHistory(sInStore.get(), playsCount, d);
                 }
             }
@@ -74,7 +76,7 @@ public class DbConnector {
         }
 
         // add all the playlists
-        for(String playlistName: dbLib.getAllPlaylistsNames()){
+        for (String playlistName : dbLib.getAllPlaylistsNames()) {
             libWithStoreInfo.createPlaylist(playlistName);
             for (Song s : dbLib.getSongsOfPlaylist(playlistName)) {
                 Optional<Song> sInStore = musicStore.getSongByTitle(s.getTitle()).stream()

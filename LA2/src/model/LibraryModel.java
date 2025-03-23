@@ -251,6 +251,14 @@ public class LibraryModel {
         }
     }
 
+    public void playSong(Song s){
+        SongInLibrary songInLibrary = getSongInLibraryFromSong(s);
+
+        if (songInLibrary != null) {
+            songInLibrary.play();
+        }
+    }
+
     void setSongPlayHistory(Song s, int count, Date lastPlayed) {
         SongInLibrary songInLibrary = getSongInLibraryFromSong(s);
         if (songInLibrary != null) {
