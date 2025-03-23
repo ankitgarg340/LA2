@@ -38,10 +38,12 @@ public class LibraryModel {
         return getSongInLibraryFromSong(song) != null;
     }
 
+    /**
+     * Add an album and all its songs to the library
+     * @param album - album to add to the library
+     */
     public void addAlbum(Album album) {
-        if (!albums.contains(album)) {
-            albums.add(album);
-        }
+        addOnlyAlbum(album);
 
         // add the songs of the album
         for (Song song : album.getSongs()) {
@@ -51,6 +53,17 @@ public class LibraryModel {
                 addSong(song);
             }
         }
+    }
+
+    /**
+     * Add only the album to the library
+     * @param album - album to add to the library
+     */
+    public void addOnlyAlbum(Album album){
+        if (!albums.contains(album)) {
+            albums.add(album);
+        }
+
     }
 
     public void createPlaylist(String name) {

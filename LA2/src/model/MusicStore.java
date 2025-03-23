@@ -17,6 +17,7 @@ public class MusicStore {
 
     /**
      * Read the albums, create their songs, and add the albums
+     *
      * @param file all the albums to read
      * @throws IOException if could not read the albums file or any specific album file
      */
@@ -104,6 +105,15 @@ public class MusicStore {
         }
 
         return returnList;
+    }
+
+    public Album getAlbumBySong(Song song) {
+        for (Album a : this.getAlbums()) {
+            if (a.getSongs().contains(song)) {
+                return a;
+            }
+        }
+        return null;
     }
 
     private void addAlbum(Album a) {
