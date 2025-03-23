@@ -93,7 +93,7 @@ public class DbConnector {
                     .findFirst();
             sInStore.ifPresent(libWithStoreInfo::markSongFavorite);
         }
-
+        libWithStoreInfo.initAutomaticPlaylists();
         return libWithStoreInfo;
     }
 

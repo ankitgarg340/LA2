@@ -2,19 +2,20 @@ package model;
 
 import com.google.gson.Gson;
 
-import java.util.Date;
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class LibraryModel {
     private final List<SongInLibrary> songs;
     private final List<Album> albums;
     private final List<Playlist> playlists;
+    private transient RecentPlaylist recentPlaylist;
 
     public LibraryModel() {
         songs = new ArrayList<>();
         albums = new ArrayList<>();
         playlists = new ArrayList<>();
+        recentPlaylist = new RecentPlaylist();
     }
 
     public void addSong(Song s) {
@@ -219,7 +220,8 @@ public class LibraryModel {
     }
 
     public boolean isPlaylistExist(String name) {
-        return getPlaylistFromName(name) != null;
+        return getPlaylistFromName(name) != null ||
+                recentPlaylist.getName().equals(name);
     }
 
     /**
@@ -251,11 +253,12 @@ public class LibraryModel {
         }
     }
 
-    public void playSong(Song s){
+    public void playSong(Song s) {
         SongInLibrary songInLibrary = getSongInLibraryFromSong(s);
 
         if (songInLibrary != null) {
             songInLibrary.play();
+            recentPlaylist.addSong(s);
         }
     }
 
@@ -283,7 +286,6 @@ public class LibraryModel {
         return null;
     }
 
-
     private SongInLibrary getSongInLibraryFromSong(Song s) {
         for (SongInLibrary sil : songs) {
             if (sil.getSong().equals(s)) {
@@ -291,5 +293,21 @@ public class LibraryModel {
             }
         }
         return null;
+    }
+
+    public void initAutomaticPlaylists() {
+        initMostRecentPlaylist();
+    }
+
+    private void initMostRecentPlaylist() {
+        List<SongInLibrary> sorted_songs = songs.stream()
+                .filter(item -> item.getLastPlayed() != null)
+                .sorted(Comparator.comparing(SongInLibrary::getLastPlayed, Comparator.reverseOrder()))
+                .limit(10)
+                .toList();
+
+        for (int i = sorted_songs.size() - 1; i >= 0; i--) {
+            recentPlaylist.addSong(sorted_songs.get(i).getSong());
+        }
     }
 }
