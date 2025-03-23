@@ -33,6 +33,8 @@ public class View {
             System.out.println("DB start error - " + e.getMessage());
             System.exit(1);
         }
+        libraryModel = dbConnector.login("test", "123");
+
     }
 
     public void start() {
@@ -47,6 +49,9 @@ public class View {
             } else if (command == 1) {
                 storeCommands();
             } else if (command == 2) {
+                dbConnector.updateUser("test", "123", libraryModel);
+                libraryModel = dbConnector.login("test", "123");
+
                 libraryCommands();
             }
         }
@@ -271,7 +276,7 @@ public class View {
 
     private void handlePlaylistSearchInLibrary() {
         while (true) {
-            String selectedPlaylist = choosePlaylistFromAll();
+            String selectedPlaylist = choosePlaylistFromAll(libraryModel.getAllPlaylistsNames());
 
             // if selectedPlaylist, meaning no playlist was selected
             if (selectedPlaylist.isEmpty()) {
@@ -285,14 +290,22 @@ public class View {
         while (true) {
             System.out.println("How would like to do on the playlist " + playlist);
             System.out.println("[1] - View all songs");
-            System.out.println("[2] - Remove a song");
+            if(!libraryModel.isPlaylistAutomatic(playlist)) {
+                System.out.println("[2] - Remove a song");
+            }
             printBackOrExitMessege();
-            int command = getUserInput(2);
+            int command;
+
+            if(libraryModel.isPlaylistAutomatic(playlist)) {
+                command = getUserInput(1);
+            } else{
+                command = getUserInput(2);
+            }
             if (command == 0) {
                 break;
             } else if (command == 1) {
                 printSongsOfPlaylist(playlist);
-            } else if (command == 2) {
+            } else if (command == 2 && !libraryModel.isPlaylistAutomatic(playlist)) {
                 deleteSongFromPlaylist(playlist);
             }
         }
@@ -373,7 +386,7 @@ public class View {
                 break;
             }
             System.out.println("Here are the songs for your search");
-            System.out.println("Which song to rate/favorite/unfavorite/add to playlist?");
+            System.out.println("Which song to rate/favorite/unfavorite/add to playlist/play?");
 
             for (int i = 0; i < searchResult.size(); i++) {
                 System.out.println("[" + (i + 1) + "] - " + searchResult.get(i).toString());
@@ -423,8 +436,9 @@ public class View {
             System.out.println("[3] - Mark as favorite");
             System.out.println("[4] - Unmark as favorite");
             System.out.println("[5] - Add to a playlist");
+            System.out.println("[6] - Play");
             printBackOrExitMessege();
-            int command = getUserInput(5);
+            int command = getUserInput(6);
             if (command == 0) {
                 break;
             } else if (command == 1) {
@@ -444,8 +458,15 @@ public class View {
                 System.out.println("Song " + song.getTitle() + " unmarked as favorite");
             } else if (command == 5) {
                 handleAddSongToPlaylist(song);
+            } else if (command == 6) {
+                playSong(song);
             }
         }
+    }
+
+    private void playSong(Song s) {
+        libraryModel.playSong(s);
+        System.out.println("You listen to song " + s.getTitle() + " for the " + libraryModel.getSongPlaysCount(s));
     }
 
     private void rateSong(Song song) {
@@ -467,7 +488,7 @@ public class View {
 
     private void handleAddSongToPlaylist(Song song) {
         while (true) {
-            String selectedPlaylist = choosePlaylistFromAll();
+            String selectedPlaylist = choosePlaylistFromAll(libraryModel.getUserPlaylistsNames());
             // if no playlist was selected
             if (selectedPlaylist.isEmpty()) {
                 break;
@@ -496,12 +517,7 @@ public class View {
      *
      * @return name of a playlist or empty string
      */
-    private String choosePlaylistFromAll() {
-        List<String> playlists = libraryModel.getAllPlaylistsNames();
-        if (playlists.isEmpty()) {
-            System.out.println("You have no playlists");
-            return "";
-        }
+    private String choosePlaylistFromAll(List<String> playlists) {
         System.out.println("Choose a playlist");
         for (int i = 0; i < playlists.size(); i++) {
             System.out.println("[" + (i + 1) + "] - " + playlists.get(i));

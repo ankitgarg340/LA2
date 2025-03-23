@@ -103,15 +103,15 @@ public class LibraryModelTest {
   
     @Test
     public void testCreatePlaylist() {
-    	assertFalse(libraryModel.getAllPlaylistsNames().contains("new"));
+    	assertFalse(libraryModel.getUserPlaylistsNames().contains("new"));
     	
     	libraryModel.createPlaylist("new");
-    	assertTrue(libraryModel.getAllPlaylistsNames().contains("new"));
+    	assertTrue(libraryModel.getUserPlaylistsNames().contains("new"));
     	
     	libraryModel.createPlaylist("new");
     	
     	int count = 0;
-    	for(String pl : libraryModel.getAllPlaylistsNames()) {
+    	for(String pl : libraryModel.getUserPlaylistsNames()) {
     		if(pl.equals("new")) {
     			count++;
     		}
@@ -122,14 +122,14 @@ public class LibraryModelTest {
     
     @Test
     public void testGetAllPlaylistsNames() {
-    	assertEquals(libraryModel.getAllPlaylistsNames().size(), 2);
-    	assertTrue(libraryModel.getAllPlaylistsNames().contains("test"));
-    	assertTrue(libraryModel.getAllPlaylistsNames().contains("empty"));
-    	assertFalse(libraryModel.getAllPlaylistsNames().contains("new"));
+    	assertEquals(libraryModel.getUserPlaylistsNames().size(), 2);
+    	assertTrue(libraryModel.getUserPlaylistsNames().contains("test"));
+    	assertTrue(libraryModel.getUserPlaylistsNames().contains("empty"));
+    	assertFalse(libraryModel.getUserPlaylistsNames().contains("new"));
     	
     	libraryModel.createPlaylist("new");
-    	assertEquals(libraryModel.getAllPlaylistsNames().size(), 3);
-    	assertTrue(libraryModel.getAllPlaylistsNames().contains("new"));
+    	assertEquals(libraryModel.getUserPlaylistsNames().size(), 3);
+    	assertTrue(libraryModel.getUserPlaylistsNames().contains("new"));
 
     }
 

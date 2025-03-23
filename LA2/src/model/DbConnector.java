@@ -5,6 +5,7 @@ import db.IDb;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,16 +29,25 @@ public class DbConnector {
                     .filter(song -> song.getArtist().equals(s.getArtist()))
                     .findFirst();
 
-            if(sInStore.isPresent()) {
+            if (sInStore.isPresent()) {
                 libWithStoreInfo.addSong(sInStore.get());
 
                 // add rating
                 int rating = dbLib.getSongRating(s);
-                libWithStoreInfo.rateSong(sInStore.get(), rating);
+                if (rating >= 1 && rating <= 5) {
+                    libWithStoreInfo.rateSong(sInStore.get(), rating);
+                }
 
                 // edge case where a song is rated 5 but not favorite
                 if (rating == 5 && !dbLib.getFavoriteSongs().contains(s)) {
                     libWithStoreInfo.markSongUnFavorite(sInStore.get());
+                }
+
+                // set plays tracking
+                int playsCount = dbLib.getSongPlaysCount(s);
+                if (playsCount > 0) {
+                    Date d = dbLib.getSongLastPlayDate(s);
+                    libWithStoreInfo.setSongPlayHistory(sInStore.get(), playsCount, d);
                 }
             }
         }
@@ -66,7 +76,7 @@ public class DbConnector {
         }
 
         // add all the playlists
-        for(String playlistName: dbLib.getAllPlaylistsNames()){
+        for (String playlistName : dbLib.getUserPlaylistsNames()) {
             libWithStoreInfo.createPlaylist(playlistName);
             for (Song s : dbLib.getSongsOfPlaylist(playlistName)) {
                 Optional<Song> sInStore = musicStore.getSongByTitle(s.getTitle()).stream()
@@ -83,7 +93,7 @@ public class DbConnector {
                     .findFirst();
             sInStore.ifPresent(libWithStoreInfo::markSongFavorite);
         }
-
+        libWithStoreInfo.initAutomaticPlaylists();
         return libWithStoreInfo;
     }
 

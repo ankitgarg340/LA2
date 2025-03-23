@@ -2,18 +2,24 @@ package model;
 
 import com.google.gson.Gson;
 
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*;
 
 public class LibraryModel {
     private final List<SongInLibrary> songs;
     private final List<Album> albums;
     private final List<Playlist> playlists;
+    private transient Playlist recentPlaylist;
+    private transient Playlist frequentPlaylist;
+
+    private transient final String RECENT_PLAYLIST_NAME = "Most Recent Played Songs";
+    private transient final String FREQUENT_PLAYLIST_NAME = "Most Frequently Played Songs";
 
     public LibraryModel() {
         songs = new ArrayList<>();
         albums = new ArrayList<>();
         playlists = new ArrayList<>();
+        recentPlaylist = new Playlist(RECENT_PLAYLIST_NAME);
+        frequentPlaylist = new Playlist(FREQUENT_PLAYLIST_NAME);
     }
 
     public void addSong(Song s) {
@@ -42,7 +48,7 @@ public class LibraryModel {
     }
 
     public void createPlaylist(String name) {
-        if (!getAllPlaylistsNames().contains(name)) {
+        if (!getUserPlaylistsNames().contains(name) && !isPlaylistAutomatic(name)) {
             playlists.add(new Playlist(name));
         }
     }
@@ -59,13 +65,21 @@ public class LibraryModel {
         return new ArrayList<>(albums);
     }
 
-    public List<String> getAllPlaylistsNames() {
+    public List<String> getUserPlaylistsNames() {
         List<String> returnPlaylistsNames = new ArrayList<>();
         for (Playlist p : playlists) {
             returnPlaylistsNames.add(p.getName());
         }
         return returnPlaylistsNames;
     }
+
+    public List<String> getAllPlaylistsNames() {
+        List<String> returnPlaylistsNames = getUserPlaylistsNames();
+        returnPlaylistsNames.add(recentPlaylist.getName());
+        returnPlaylistsNames.add(frequentPlaylist.getName());
+        return returnPlaylistsNames;
+    }
+
 
     /**
      * Give a rating for a song from 1 to 5, if a song is not in the library, don't do anything
@@ -103,6 +117,12 @@ public class LibraryModel {
     }
 
     private Playlist getPlaylistFromName(String name) {
+        if (name.equals(RECENT_PLAYLIST_NAME)) {
+            return recentPlaylist;
+        }
+        if (name.equals(FREQUENT_PLAYLIST_NAME)) {
+            return frequentPlaylist;
+        }
         for (Playlist p : playlists) {
             if (p.getName().equals(name)) {
                 return p;
@@ -243,11 +263,45 @@ public class LibraryModel {
     public void removeSong(Song s) {
         SongInLibrary songInLibrary = getSongInLibraryFromSong(s);
         if (songInLibrary != null) {
-            for(Playlist playlist: playlists){
+            for (Playlist playlist : playlists) {
                 playlist.removeSong(s);
             }
             songs.remove(songInLibrary);
         }
+    }
+
+    public void playSong(Song s) {
+        SongInLibrary songInLibrary = getSongInLibraryFromSong(s);
+
+        if (songInLibrary != null) {
+            songInLibrary.play();
+            initRecentPlaylist();
+            initFrequentPlaylist();
+        }
+    }
+
+    void setSongPlayHistory(Song s, int count, Date lastPlayed) {
+        SongInLibrary songInLibrary = getSongInLibraryFromSong(s);
+        if (songInLibrary != null) {
+            songInLibrary.setLastPlayed(lastPlayed);
+            songInLibrary.setPlayCounter(count);
+        }
+    }
+
+    public int getSongPlaysCount(Song s) {
+        SongInLibrary songInLibrary = getSongInLibraryFromSong(s);
+        if (songInLibrary != null) {
+            return songInLibrary.getPlayCounter();
+        }
+        return -1;
+    }
+
+    public Date getSongLastPlayDate(Song s) {
+        SongInLibrary songInLibrary = getSongInLibraryFromSong(s);
+        if (songInLibrary != null) {
+            return songInLibrary.getLastPlayed();
+        }
+        return null;
     }
 
     private SongInLibrary getSongInLibraryFromSong(Song s) {
@@ -257,5 +311,45 @@ public class LibraryModel {
             }
         }
         return null;
+    }
+
+    public boolean isPlaylistAutomatic(String playlistName) {
+        return playlistName.equals(RECENT_PLAYLIST_NAME) ||
+                playlistName.equals(FREQUENT_PLAYLIST_NAME);
+
+    }
+
+    public void initAutomaticPlaylists() {
+        initRecentPlaylist();
+        initFrequentPlaylist();
+    }
+
+    private void initRecentPlaylist() {
+        List<SongInLibrary> sorted_songs = songs.stream()
+                .filter(item -> item.getLastPlayed() != null)
+                .sorted(Comparator.comparing(SongInLibrary::getLastPlayed, Comparator.reverseOrder()))
+                .limit(10)
+                .toList();
+
+        recentPlaylist = new Playlist(RECENT_PLAYLIST_NAME);
+
+        for (SongInLibrary sortedSong : sorted_songs) {
+            recentPlaylist.addSong(sortedSong.getSong());
+        }
+    }
+
+    private void initFrequentPlaylist() {
+        List<SongInLibrary> sorted_songs = songs.stream()
+                .filter(item -> item.getPlayCounter() > 0)
+                .sorted(Comparator.comparing(SongInLibrary::getPlayCounter, Comparator.reverseOrder()))
+                .limit(10)
+                .toList();
+
+        frequentPlaylist = new Playlist(FREQUENT_PLAYLIST_NAME);
+
+        for (SongInLibrary sortedSong : sorted_songs) {
+            frequentPlaylist.addSong(sortedSong.getSong());
+        }
+
     }
 }

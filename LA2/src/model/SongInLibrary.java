@@ -1,13 +1,19 @@
 package model;
 
+import java.util.Date;
+
 public class SongInLibrary {
     private final Song song;
     private boolean isFavorite;
     private int rating;
+    private Date lastPlayed;
+    private int playCounter;
 
     public SongInLibrary(Song s) {
         song = s;
         isFavorite = false;
+        playCounter = 0;
+        lastPlayed = null;
     }
 
     public Song getSong() {
@@ -32,5 +38,30 @@ public class SongInLibrary {
 
     public int getRating() {
         return rating;
+    }
+
+    public void play() {
+        playCounter++;
+        lastPlayed = new Date();
+    }
+
+    public int getPlayCounter() {
+        return playCounter;
+    }
+
+    public Date getLastPlayed() {
+        if (lastPlayed != null) {
+            return (Date) lastPlayed.clone();
+        } else {
+            return null;
+        }
+    }
+
+    void setLastPlayed(Date d){
+        lastPlayed = (Date) d.clone();
+    }
+
+    void setPlayCounter(int c){
+        playCounter = c;
     }
 }
