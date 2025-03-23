@@ -3,7 +3,6 @@ package model;
 import com.google.gson.Gson;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class LibraryModel {
     private final List<SongInLibrary> songs;
@@ -49,7 +48,7 @@ public class LibraryModel {
     }
 
     public void createPlaylist(String name) {
-        if (!getAllPlaylistsNames().contains(name)) {
+        if (!getUserPlaylistsNames().contains(name) && !isPlaylistAutomatic(name)) {
             playlists.add(new Playlist(name));
         }
     }
@@ -66,13 +65,21 @@ public class LibraryModel {
         return new ArrayList<>(albums);
     }
 
-    public List<String> getAllPlaylistsNames() {
+    public List<String> getUserPlaylistsNames() {
         List<String> returnPlaylistsNames = new ArrayList<>();
         for (Playlist p : playlists) {
             returnPlaylistsNames.add(p.getName());
         }
         return returnPlaylistsNames;
     }
+
+    public List<String> getAllPlaylistsNames() {
+        List<String> returnPlaylistsNames = getUserPlaylistsNames();
+        returnPlaylistsNames.add(recentPlaylist.getName());
+        returnPlaylistsNames.add(frequentPlaylist.getName());
+        return returnPlaylistsNames;
+    }
+
 
     /**
      * Give a rating for a song from 1 to 5, if a song is not in the library, don't do anything
@@ -110,6 +117,12 @@ public class LibraryModel {
     }
 
     private Playlist getPlaylistFromName(String name) {
+        if (name.equals(RECENT_PLAYLIST_NAME)) {
+            return recentPlaylist;
+        }
+        if (name.equals(FREQUENT_PLAYLIST_NAME)) {
+            return frequentPlaylist;
+        }
         for (Playlist p : playlists) {
             if (p.getName().equals(name)) {
                 return p;
@@ -298,6 +311,12 @@ public class LibraryModel {
             }
         }
         return null;
+    }
+
+    public boolean isPlaylistAutomatic(String playlistName) {
+        return playlistName.equals(RECENT_PLAYLIST_NAME) ||
+                playlistName.equals(FREQUENT_PLAYLIST_NAME);
+
     }
 
     public void initAutomaticPlaylists() {

@@ -76,7 +76,7 @@ public class DbConnector {
         }
 
         // add all the playlists
-        for (String playlistName : dbLib.getAllPlaylistsNames()) {
+        for (String playlistName : dbLib.getUserPlaylistsNames()) {
             libWithStoreInfo.createPlaylist(playlistName);
             for (Song s : dbLib.getSongsOfPlaylist(playlistName)) {
                 Optional<Song> sInStore = musicStore.getSongByTitle(s.getTitle()).stream()
