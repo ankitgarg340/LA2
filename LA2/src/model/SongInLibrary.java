@@ -56,4 +56,12 @@ public class SongInLibrary {
             return null;
         }
     }
+
+    void setLastPlayed(Date d){
+        lastPlayed = (Date) d.clone();
+    }
+
+    void setPlayCounter(int c){
+        playCounter = c;
+    }
 }

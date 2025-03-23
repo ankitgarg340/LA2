@@ -2,6 +2,7 @@ package model;
 
 import com.google.gson.Gson;
 
+import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -243,12 +244,37 @@ public class LibraryModel {
     public void removeSong(Song s) {
         SongInLibrary songInLibrary = getSongInLibraryFromSong(s);
         if (songInLibrary != null) {
-            for(Playlist playlist: playlists){
+            for (Playlist playlist : playlists) {
                 playlist.removeSong(s);
             }
             songs.remove(songInLibrary);
         }
     }
+
+    void setSongPlayHistory(Song s, int count, Date lastPlayed) {
+        SongInLibrary songInLibrary = getSongInLibraryFromSong(s);
+        if (songInLibrary != null) {
+            songInLibrary.setLastPlayed(lastPlayed);
+            songInLibrary.setPlayCounter(count);
+        }
+    }
+
+    public int getSongPlaysCount(Song s) {
+        SongInLibrary songInLibrary = getSongInLibraryFromSong(s);
+        if (songInLibrary != null) {
+            return songInLibrary.getPlayCounter();
+        }
+        return -1;
+    }
+
+    public Date getSongLastPlayDate(Song s) {
+        SongInLibrary songInLibrary = getSongInLibraryFromSong(s);
+        if (songInLibrary != null) {
+            return songInLibrary.getLastPlayed();
+        }
+        return null;
+    }
+
 
     private SongInLibrary getSongInLibraryFromSong(Song s) {
         for (SongInLibrary sil : songs) {

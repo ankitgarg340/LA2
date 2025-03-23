@@ -5,6 +5,7 @@ import db.IDb;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,6 +39,13 @@ public class DbConnector {
                 // edge case where a song is rated 5 but not favorite
                 if (rating == 5 && !dbLib.getFavoriteSongs().contains(s)) {
                     libWithStoreInfo.markSongUnFavorite(sInStore.get());
+                }
+
+                // set plays tracking
+                int playsCount = dbLib.getSongPlaysCount(sInStore.get());
+                if(playsCount>0){
+                    Date d = dbLib.getSongLastPlayDate(sInStore.get());
+                    libWithStoreInfo.setSongPlayHistory(sInStore.get(), playsCount, d);
                 }
             }
         }
