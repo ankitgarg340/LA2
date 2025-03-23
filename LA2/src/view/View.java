@@ -36,8 +36,8 @@ public class View {
 
         //dbConnector.createUser("test", "1234");
         libraryModel = dbConnector.login("test", "1234");
-        libraryModel.addSong(new Song("aaaa","dddd","222a22"));
-        dbConnector.updateUser("test", "1234", libraryModel);
+//        libraryModel.addSong(new Song("aaaa","dddd","222a22"));
+//        dbConnector.updateUser("test", "1234", libraryModel);
     }
 
     public void start() {

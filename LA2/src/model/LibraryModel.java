@@ -240,6 +240,16 @@ public class LibraryModel {
         return gson.fromJson(gson.toJson(this), getClass());
     }
 
+    public void removeSong(Song s) {
+        SongInLibrary songInLibrary = getSongInLibraryFromSong(s);
+        if (songInLibrary != null) {
+            for(Playlist playlist: playlists){
+                playlist.removeSong(s);
+            }
+            songs.remove(songInLibrary);
+        }
+    }
+
     private SongInLibrary getSongInLibraryFromSong(Song s) {
         for (SongInLibrary sil : songs) {
             if (sil.getSong().equals(s)) {
