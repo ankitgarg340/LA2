@@ -129,6 +129,7 @@ public class View {
             } else if (command >= 1 && command <= searchResult.size()) {
                 Song selectedSong = searchResult.get(command - 1);
                 libraryModel.addSong(selectedSong);
+                libraryModel.addOnlyAlbum(musicStore.getAlbumBySong(selectedSong));
                 System.out.println("The song " + selectedSong.toString() + " is in your library");
             }
         }
@@ -290,15 +291,15 @@ public class View {
         while (true) {
             System.out.println("What would like to do on the playlist " + playlist);
             System.out.println("[1] - View all songs");
-            if(!libraryModel.isPlaylistAutomatic(playlist)) {
+            if (!libraryModel.isPlaylistAutomatic(playlist)) {
                 System.out.println("[2] - Remove a song");
             }
             printBackOrExitMessege();
             int command;
 
-            if(libraryModel.isPlaylistAutomatic(playlist)) {
+            if (libraryModel.isPlaylistAutomatic(playlist)) {
                 command = getUserInput(1);
-            } else{
+            } else {
                 command = getUserInput(2);
             }
             if (command == 0) {
