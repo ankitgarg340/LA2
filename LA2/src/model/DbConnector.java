@@ -14,10 +14,7 @@ public class DbConnector {
         db = new DbJson();
     }
     private LibraryModel getLibraryModelInfoFromStore(LibraryModel dbLib){
-//        LibraryModel fromStoreLib = new LibraryModel();
-//
-//        return fromStoreLib;
-        return dbLib;
+        return dbLib.makeCopy();
     }
 
     public void createUser(String username, String password) throws IllegalArgumentException{
@@ -25,7 +22,7 @@ public class DbConnector {
     }
 
     public void updateUser(String username, String password, LibraryModel lib) throws IllegalArgumentException{
-        db.updateUser(username, password, lib);
+        db.updateUser(username, password, lib.makeCopy());
     }
 
     public LibraryModel login(String username, String password) throws IllegalArgumentException{

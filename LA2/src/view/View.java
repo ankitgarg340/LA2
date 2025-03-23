@@ -8,7 +8,7 @@ import java.util.Scanner;
 
 public class View {
     private final MusicStore musicStore;
-    private final LibraryModel libraryModel;
+    private LibraryModel libraryModel;
     private DbConnector dbConnector;
 
     private final String BACK_COMMAND = "b";
@@ -34,7 +34,10 @@ public class View {
             System.exit(1);
         }
 
-        dbConnector.createUser("test", "1234");
+        //dbConnector.createUser("test", "1234");
+        libraryModel = dbConnector.login("test", "1234");
+        libraryModel.addSong(new Song("aaaa","dddd","222a22"));
+        dbConnector.updateUser("test", "1234", libraryModel);
     }
 
     public void start() {

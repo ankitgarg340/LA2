@@ -1,7 +1,6 @@
 package model;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -237,7 +236,7 @@ public class LibraryModel {
     }
 
     public LibraryModel makeCopy() {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        Gson gson = new Gson();
         return gson.fromJson(gson.toJson(this), getClass());
     }
 
