@@ -1,9 +1,6 @@
 package view;
 
-import model.Album;
-import model.LibraryModel;
-import model.MusicStore;
-import model.Song;
+import model.*;
 
 import java.io.IOException;
 import java.util.List;
@@ -11,7 +8,8 @@ import java.util.Scanner;
 
 public class View {
     private final MusicStore musicStore;
-    private final LibraryModel libraryModel;
+    private LibraryModel libraryModel;
+    private DbConnector dbConnector;
 
     private final String BACK_COMMAND = "b";
     private final String EXIT_COMMAND = "x";
@@ -26,6 +24,13 @@ public class View {
             musicStore.readFile(dataFile);
         } catch (IOException e) {
             System.out.println("Could not load data from file with error msg - " + e.getMessage());
+            System.exit(1);
+        }
+
+        try {
+            dbConnector = new DbConnector(musicStore);
+        } catch (IOException e) {
+            System.out.println("DB start error - " + e.getMessage());
             System.exit(1);
         }
     }
@@ -96,6 +101,7 @@ public class View {
     /**
      * Get a list of songs from the store to allow the user to choose which one he would
      * like to add to the library
+     *
      * @param searchResult list of songs
      */
     private void handleSongsSearchInStore(List<Song> searchResult) {
@@ -155,6 +161,7 @@ public class View {
     /**
      * Get a list of albums from the store to allow the user to choose which one he would
      * like to add to the library
+     *
      * @param searchResult list of albums
      */
     private void handleAlbumsSearchInStore(List<Album> searchResult) {
@@ -424,12 +431,12 @@ public class View {
                 rateSong(song);
             } else if (command == 2) {
                 int rating = libraryModel.getSongRating(song);
-                if(rating == 0){
+                if (rating == 0) {
                     System.out.println(song.getTitle() + " has no rating");
-                } else{
-                    System.out.println(song.getTitle() + " rating is "+rating);
+                } else {
+                    System.out.println(song.getTitle() + " rating is " + rating);
                 }
-            }else if (command == 3) {
+            } else if (command == 3) {
                 libraryModel.markSongFavorite(song);
                 System.out.println("Song " + song.getTitle() + " marked as favorite");
             } else if (command == 4) {
@@ -486,6 +493,7 @@ public class View {
     /**
      * Let the user to choose a playlist.
      * If no playlist was chosen, return empty string
+     *
      * @return name of a playlist or empty string
      */
     private String choosePlaylistFromAll() {
