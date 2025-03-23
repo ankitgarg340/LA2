@@ -288,7 +288,7 @@ public class View {
 
     private void handlePlaylistAction(String playlist) {
         while (true) {
-            System.out.println("How would like to do on the playlist " + playlist);
+            System.out.println("What would like to do on the playlist " + playlist);
             System.out.println("[1] - View all songs");
             if(!libraryModel.isPlaylistAutomatic(playlist)) {
                 System.out.println("[2] - Remove a song");
