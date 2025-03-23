@@ -33,11 +33,6 @@ public class View {
             System.out.println("DB start error - " + e.getMessage());
             System.exit(1);
         }
-
-        //dbConnector.createUser("test", "1234");
-        libraryModel = dbConnector.login("test", "1234");
-//        libraryModel.addSong(new Song("aaaa","dddd","222a22"));
-//        dbConnector.updateUser("test", "1234", libraryModel);
     }
 
     public void start() {

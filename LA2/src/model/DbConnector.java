@@ -18,6 +18,8 @@ public class DbConnector {
     }
 
     private LibraryModel getLibraryModelInfoFromStore(LibraryModel dbLib) {
+        // creating a LibraryModel based on the LibraryModel from the db with the object
+        // from the music store
         LibraryModel libWithStoreInfo = new LibraryModel();
 
         // add all the songs from the store

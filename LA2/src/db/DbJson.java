@@ -71,6 +71,7 @@ public class DbJson implements IDb {
         try (FileWriter writer = new FileWriter(FILE_PATH)) {
             gson.toJson(usersByUsername, writer);
         } catch (IOException e) {
+            System.out.println("Failed saving db");
         }
     }
 
@@ -85,14 +86,11 @@ public class DbJson implements IDb {
         throw new IllegalArgumentException("User not exist or wrong password");
     }
 
-    private void loadUsers() {
-        try (Reader reader = new FileReader(FILE_PATH)) {
-            Type usersType = new TypeToken<HashMap<String, User>>() {
-            }.getType();
-            usersByUsername = gson.fromJson(reader, usersType);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    private void loadUsers() throws IOException {
+        Reader reader = new FileReader(FILE_PATH);
+        Type usersType = new TypeToken<HashMap<String, User>>() {
+        }.getType();
+        usersByUsername = gson.fromJson(reader, usersType);
     }
 
     private String hashPassword(String password, String salt) {
