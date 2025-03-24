@@ -175,6 +175,11 @@ public class LibraryModel {
         }
         return null;
     }
+    
+    public void shufflePlaylist(String playlist) {
+    	Playlist pl = getPlaylistFromName(playlist);
+    	pl.shuffle();
+    }
 
     /**
      * Get the list of the songs in the playlist.
@@ -262,10 +267,15 @@ public class LibraryModel {
     }
     
     
-    public List<SongInLibrary> getSongsSortedByRating() {
-    	List<SongInLibrary> returnList = this.getAllSongsInLibrary();
+    public List<Song> getSongsSortedByRating() {
+    	List<SongInLibrary> sortedList = this.getAllSongsInLibrary();
     	
-    	returnList.sort(Comparator.comparing(SongInLibrary -> SongInLibrary.getRating()));
+    	sortedList.sort(Comparator.comparing(SongInLibrary -> SongInLibrary.getRating()));
+    	
+    	List<Song> returnList = new ArrayList<Song>();
+    	for(SongInLibrary sil : sortedList) {
+    		returnList.add(sil.getSong());
+    	}
     	
     	return returnList;
     }

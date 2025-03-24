@@ -309,8 +309,9 @@ public class View {
             System.out.println("[2] - Search for albums");
             System.out.println("[3] - Search for playlists");
             System.out.println("[4] - Create a playlist");
+            System.out.println("[5] - Shuffle Library");
             printBackOrExitMessege();
-            int command = getUserInput(4);
+            int command = getUserInput(5);
 
             if (command == 0) {
                 break;
@@ -322,8 +323,22 @@ public class View {
                 searchPlaylists();
             } else if (command == 4) {
                 createPlaylist();
+            } else if (command == 5) {
+            	shuffleLibrary();
             }
         }
+    }
+    
+    private void shuffleLibrary() {
+    	libraryModel.shuffleSongs();
+    	while(true) {
+            System.out.println("Songs Successfully Shuffled!");
+            System.out.println();
+            handleSongsSearchInLibrary(libraryModel.getAllSongs());
+            break;
+    	}
+    	
+    	
     }
 
     private void searchSongsInLibrary() {
@@ -343,13 +358,37 @@ public class View {
             } else if (command == 2) {
                 handleSongsSearchInLibrary(searchSongsInLibraryByArtist());
             } else if (command == 3) {
-                handleSongsSearchInLibrary(libraryModel.getAllSongs());
+               getAllSongsOptions();
             } else if (command == 4) {
                 handleSongsSearchInLibrary(libraryModel.getFavoriteSongs());
             } else if (command == 5) {
                 handleSongsSearchInLibrary(searchSongsInLibraryByGenre());
             }
         }
+    }
+    
+    private void getAllSongsOptions() {
+    	while(true) {
+            System.out.println("How would like to see all your songs?");
+            System.out.println("[1] - Sorted alphabetically by song title");
+            System.out.println("[2] - Sorted alphabetically by artist title");
+            System.out.println("[3] - Sorted by rating");
+            System.out.println("[4] - Original Order");
+            printBackOrExitMessege();
+            int command = getUserInput(4);
+            
+            if(command == 0) {
+            	break;
+            } else if (command == 1) {
+                handleSongsSearchInLibrary(libraryModel.getSongsSortedByTitle());
+            } else if (command == 2) {
+                handleSongsSearchInLibrary(libraryModel.getSongsSortedByArtist());
+            } else if (command == 3) {
+                handleSongsSearchInLibrary(libraryModel.getSongsSortedByRating());
+            } else if (command == 4) {
+                handleSongsSearchInLibrary(libraryModel.getAllSongs());
+            } 
+    	}
     }
 
     private void searchPlaylists() {
@@ -399,6 +438,7 @@ public class View {
             System.out.println("[1] - View all songs");
             if (!libraryModel.isPlaylistAutomatic(playlist)) {
                 System.out.println("[2] - Remove a song");
+                System.out.println("[3] - Shuffle songs");
             }
             printBackOrExitMessege();
             int command;
@@ -406,7 +446,7 @@ public class View {
             if (libraryModel.isPlaylistAutomatic(playlist)) {
                 command = getUserInput(1);
             } else {
-                command = getUserInput(2);
+                command = getUserInput(3);
             }
             if (command == 0) {
                 break;
@@ -414,6 +454,8 @@ public class View {
                 printSongsOfPlaylist(playlist);
             } else if (command == 2 && !libraryModel.isPlaylistAutomatic(playlist)) {
                 deleteSongFromPlaylist(playlist);
+            } else if (command == 3 && !libraryModel.isPlaylistAutomatic(playlist)) {
+            	libraryModel.shufflePlaylist(playlist);
             }
         }
     }
