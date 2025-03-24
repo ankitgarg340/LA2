@@ -296,7 +296,25 @@ public class LibraryModel {
                 playlist.removeSong(s);
             }
             songs.remove(songInLibrary);
+            initAutomaticPlaylists();
         }
+    }
+    
+    public void removeAlbum(Album a) {
+    	if(albums.remove(a)) {
+    	
+	    	for (SongInLibrary sil : songs) {
+	    		if(sil.getSong().getAlbum().equals(a.getTitle())) {
+	    			removeSong(sil.getSong());
+	    		}
+	    	}
+    	}
+    	
+    	initAutomaticPlaylists();
+    }
+    
+    public void shuffleSongs() {
+    	Collections.shuffle(songs);
     }
 
     public void playSong(Song s) {

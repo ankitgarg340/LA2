@@ -1,6 +1,7 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Playlist {
@@ -29,6 +30,10 @@ public class Playlist {
 
     public List<Song> getSongs() {
         return new ArrayList<>(songs);
+    }
+    
+    public void shuffle() {
+    	Collections.shuffle(songs);
     }
     
 }
