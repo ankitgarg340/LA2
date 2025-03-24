@@ -41,14 +41,18 @@ public class SongInLibrary {
     }
 
     public void play() {
-        playCounter++;
-        lastPlayed = new Date();
+        setPlayCounter(playCounter+1);
+        setLastPlayed(new Date());
     }
 
     public int getPlayCounter() {
         return playCounter;
     }
 
+    /**
+     * Get the latest date of when this song was played. Null if this song was never played
+     * @return Date or null
+     */
     public Date getLastPlayed() {
         if (lastPlayed != null) {
             return (Date) lastPlayed.clone();
@@ -57,6 +61,9 @@ public class SongInLibrary {
         }
     }
 
+
+    // setLastPlayed and setPlayCounter exist within the package when we build the library model
+    // from the db
     void setLastPlayed(Date d){
         lastPlayed = (Date) d.clone();
     }
