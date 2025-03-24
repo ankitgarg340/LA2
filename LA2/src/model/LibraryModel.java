@@ -88,7 +88,7 @@ public class LibraryModel {
     }
 
     private List<SongInLibrary> getAllSongsInLibrary() {
-        return new ArrayList<SongInLibrary>(songs);
+        return new ArrayList<>(songs);
     }
 
     public List<Album> getAllAlbums() {
