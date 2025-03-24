@@ -4,6 +4,8 @@ import model.Song;
 import model.SongInLibrary;
 import org.junit.jupiter.api.Test;
 
+import java.util.Date;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class SongInLibraryTest {
@@ -90,4 +92,23 @@ public class SongInLibraryTest {
         assertEquals(s1, sil.getSong());
     }
 
+    @Test
+    public void testNeverPlay() {
+        SongInLibrary sil = new SongInLibrary(s1);
+        assertEquals(0, sil.getPlayCounter());
+        assertNull(sil.getLastPlayed());
+    }
+
+    @Test
+    public void testPlay() {
+        SongInLibrary sil = new SongInLibrary(s1);
+        assertEquals(0, sil.getPlayCounter());
+        Date dBefore = new Date();
+        sil.play();
+        Date dAfter = new Date();
+        assertEquals(1, sil.getPlayCounter());
+        assertNotNull(sil.getLastPlayed());
+        assertTrue(sil.getLastPlayed().getTime()>=dBefore.getTime());
+        assertTrue(sil.getLastPlayed().getTime()<=dAfter.getTime());
+    }
 }

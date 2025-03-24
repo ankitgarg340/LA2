@@ -74,7 +74,7 @@ public class LibraryModel {
     public void createPlaylist(String name) {
         if (!getUserPlaylistsNames().contains(name) &&
                 !isPlaylistAutomatic(name) &&
-                name.startsWith(GENRE_PLAYLIST_START)) {
+                !name.startsWith(GENRE_PLAYLIST_START)) {
             playlists.add(new Playlist(name));
         }
     }
