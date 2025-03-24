@@ -86,9 +86,9 @@ public class LibraryModel {
         }
         return returnSongs;
     }
-    
+
     private List<SongInLibrary> getAllSongsInLibrary() {
-    	return new ArrayList<SongInLibrary> (songs);
+        return new ArrayList<>(songs);
     }
 
     public List<Album> getAllAlbums() {
@@ -249,15 +249,15 @@ public class LibraryModel {
 
         return returnList;
     }
-    
+
     public List<Song> getSongsSortedByTitle() {
-    	List<Song> returnList = this.getAllSongs();
-    	
-    	returnList.sort((s1,s2) -> s1.getTitle().compareTo(s2.getTitle()));
-    	
-    	return returnList;
+        List<Song> returnList = this.getAllSongs();
+
+        returnList.sort((s1, s2) -> s1.getTitle().compareTo(s2.getTitle()));
+
+        return returnList;
     }
-    
+
     public List<Song> getSongsSortedByArtist() {
     	List<Song> returnList = this.getAllSongs();
     	
@@ -350,7 +350,7 @@ public class LibraryModel {
             initAutomaticPlaylists();
         }
     }
-    
+
     public void removeAlbum(Album a) {
     	if(albums.remove(a)) {
     		ArrayList<Song> toRemove = new ArrayList<Song>();
@@ -370,7 +370,7 @@ public class LibraryModel {
     }
     
     public void shuffleSongs() {
-    	Collections.shuffle(songs);
+        Collections.shuffle(songs);
     }
 
     public void playSong(Song s) {
