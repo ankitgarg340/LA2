@@ -91,6 +91,7 @@ public class DbJson implements IDb {
         Type usersType = new TypeToken<HashMap<String, User>>() {
         }.getType();
         usersByUsername = gson.fromJson(reader, usersType);
+        reader.close();
     }
 
     private String hashPassword(String password, String salt) {
