@@ -353,12 +353,17 @@ public class LibraryModel {
     
     public void removeAlbum(Album a) {
     	if(albums.remove(a)) {
-    	
-	    	for (SongInLibrary sil : songs) {
+    		ArrayList<Song> toRemove = new ArrayList<Song>();
+    		for(SongInLibrary sil : songs) {
 	    		if(sil.getSong().getAlbum().equals(a.getTitle())) {
-	    			removeSong(sil.getSong());
+	    			toRemove.add(sil.getSong());
 	    		}
-	    	}
+    		}
+    		
+    		for(Song s : toRemove) {
+    			removeSong(s);
+    		}
+
     	}
     	
     	initAutomaticPlaylists();
