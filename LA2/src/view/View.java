@@ -10,6 +10,8 @@ public class View {
     private final MusicStore musicStore;
     private LibraryModel libraryModel;
     private DbConnector dbConnector;
+    private String username;
+    private String password;
 
     private final String BACK_COMMAND = "b";
     private final String EXIT_COMMAND = "x";
@@ -18,6 +20,9 @@ public class View {
     public View(String dataFile) {
         musicStore = new MusicStore();
         libraryModel = new LibraryModel();
+        
+        username = "";
+        password = "";
 
         scanner = new Scanner(System.in);
         try {
@@ -66,6 +71,9 @@ public class View {
 
             try {
             	libraryModel = dbConnector.login(usernameIn, passwordIn);
+            	username = usernameIn;
+            	password = passwordIn;
+            	
             	accountIn(usernameIn);
             } catch (IllegalArgumentException e) {
             	System.out.println("Error account not found!");
@@ -94,6 +102,10 @@ public class View {
             try {
             	dbConnector.createUser(usernameIn, passwordIn);
             	libraryModel = dbConnector.login(usernameIn, passwordIn);
+            	
+            	username = usernameIn;
+            	password = passwordIn;
+            	
             	accountIn(usernameIn);
             } catch (IllegalArgumentException e) {
             	System.out.println("Error username taken!");
@@ -126,33 +138,23 @@ public class View {
             } else if (command == 2) {
                 libraryCommands();
             } else if (command == 3) {
-            	logOut(username);
+            	logOut();
             }
         }
     }
     
-    private void logOut(String username) {
+    private void logOut() {
     	while (true) {
-    		System.out.println("Please provide your password again to confirm");
-
-            System.out.print("Password: ");
-            String passwordIn = scanner.nextLine();
-
             try {
-            	dbConnector.updateUser(username, passwordIn, libraryModel);
+            	dbConnector.updateUser(username, password, libraryModel);
             	System.out.println("Successfully Logged Out!");
             	System.out.println();
-            	start();
+            	
+            	username = "";
+            	password = "";
+            	System.exit(0);
             } catch (IllegalArgumentException e) {
-            	System.out.println("Error password incorrect!");
-                System.out.println("[1] - Retry");
-                printBackOrExitMessege();
-                int command = getUserInput(1);
-                if (command == 0) {
-                    break;
-                } if(command == 1) {
-                	logOut(username);
-                }
+               System.exit(0);
             }	
     	}
     	
@@ -649,6 +651,9 @@ public class View {
 
         // the user wants to exit the program
         if (input.compareTo(EXIT_COMMAND) == 0) {
+        	if(password.compareTo("") != 0) {
+        		logOut();
+        	}
             System.exit(0);
         }
 
@@ -678,6 +683,6 @@ public class View {
 
     private void printBackOrExitMessege() {
         System.out.println("[" + BACK_COMMAND + "] - to go back");
-        System.out.println("[" + EXIT_COMMAND + "] - to exit the program (without saving changes)");
+        System.out.println("[" + EXIT_COMMAND + "] - to exit the program");
     }
 }
