@@ -22,8 +22,7 @@ public class Song {
     public String getArtist() {
         return artist;
     }
-
-    public String getAlbumName() {
-        return albumName;
+    public String getAlbum() {
+    	return albumName;
     }
 }
