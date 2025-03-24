@@ -292,8 +292,9 @@ public class View {
             System.out.println("[2] - Search for albums");
             System.out.println("[3] - Search for playlists");
             System.out.println("[4] - Create a playlist");
+            System.out.println("[5] - Shuffle Library");
             printBackOrExitMessege();
-            int command = getUserInput(4);
+            int command = getUserInput(5);
 
             if (command == 0) {
                 break;
@@ -305,8 +306,22 @@ public class View {
                 searchPlaylists();
             } else if (command == 4) {
                 createPlaylist();
+            } else if (command == 5) {
+            	shuffleLibrary();
             }
         }
+    }
+    
+    private void shuffleLibrary() {
+    	libraryModel.shuffleSongs();
+    	while(true) {
+            System.out.println("Songs Successfully Shuffled!");
+            System.out.println();
+            handleSongsSearchInLibrary(libraryModel.getAllSongs());
+            break;
+    	}
+    	
+    	
     }
 
     private void searchSongsInLibrary() {
@@ -326,13 +341,37 @@ public class View {
             } else if (command == 2) {
                 handleSongsSearchInLibrary(searchSongsInLibraryByArtist());
             } else if (command == 3) {
-                handleSongsSearchInLibrary(libraryModel.getAllSongs());
+               getAllSongsOptions();
             } else if (command == 4) {
                 handleSongsSearchInLibrary(libraryModel.getFavoriteSongs());
             } else if (command == 5) {
                 handleSongsSearchInLibrary(searchSongsInLibraryByGenre());
             }
         }
+    }
+    
+    private void getAllSongsOptions() {
+    	while(true) {
+            System.out.println("How would like to see all your songs?");
+            System.out.println("[1] - Sorted alphabetically by song title");
+            System.out.println("[2] - Sorted alphabetically by artist title");
+            System.out.println("[3] - Sorted by rating");
+            System.out.println("[4] - Original Order");
+            printBackOrExitMessege();
+            int command = getUserInput(4);
+            
+            if(command == 0) {
+            	break;
+            } else if (command == 1) {
+                handleSongsSearchInLibrary(libraryModel.getSongsSortedByTitle());
+            } else if (command == 2) {
+                handleSongsSearchInLibrary(libraryModel.getSongsSortedByArtist());
+            } else if (command == 3) {
+                handleSongsSearchInLibrary(libraryModel.getSongsSortedByRating());
+            } else if (command == 4) {
+                handleSongsSearchInLibrary(libraryModel.getAllSongs());
+            } 
+    	}
     }
 
     private void searchPlaylists() {
@@ -382,6 +421,7 @@ public class View {
             System.out.println("[1] - View all songs");
             if (!libraryModel.isPlaylistAutomatic(playlist)) {
                 System.out.println("[2] - Remove a song");
+                System.out.println("[3] - Shuffle songs");
             }
             printBackOrExitMessege();
             int command;
@@ -389,7 +429,7 @@ public class View {
             if (libraryModel.isPlaylistAutomatic(playlist)) {
                 command = getUserInput(1);
             } else {
-                command = getUserInput(2);
+                command = getUserInput(3);
             }
             if (command == 0) {
                 break;
@@ -397,6 +437,8 @@ public class View {
                 printSongsOfPlaylist(playlist);
             } else if (command == 2 && !libraryModel.isPlaylistAutomatic(playlist)) {
                 deleteSongFromPlaylist(playlist);
+            } else if (command == 3 && !libraryModel.isPlaylistAutomatic(playlist)) {
+            	libraryModel.shufflePlaylist(playlist);
             }
         }
     }
@@ -454,19 +496,35 @@ public class View {
     }
 
     private void handleAlbumsSearchInLibrary(List<Album> searchResult) {
-        if (searchResult.isEmpty()) {
-            System.out.println("No albums were found");
-        } else {
-            System.out.println("Here are the albums for your search");
-
-            for (Album album : searchResult) {
-                System.out.println(album.toString());
-                System.out.println("\tSongs:");
-                for (Song s : album.getSongs()) {
-                    System.out.println("\t\t" + s.toString());
-                }
-            }
-        }
+    	while(true) {
+	        if (searchResult.isEmpty()) {
+	            System.out.println("No albums were found");
+	        } else {
+	            System.out.println("Here are the albums for your search");
+	            System.out.println("Which album (and associated songs) would you like to remove from library?");
+	
+	            for (int i = 0; i < searchResult.size(); i++) {
+	                System.out.println("[" + (i + 1) + "] - " + searchResult.get(i).toString());
+	                System.out.println("\tSongs:");
+	                for (Song s : searchResult.get(i).getSongs()) {
+	                    System.out.println("\t\t" + s.toString());
+	                }
+	            }
+	
+	            printBackOrExitMessege();
+	            int command = getUserInput(searchResult.size());
+	
+	            if (command == 0) {
+	                break;
+	            } else if (command >= 1 && command <= searchResult.size()) {
+	                Album selectedAlbum = searchResult.get(command - 1);
+	                libraryModel.removeAlbum(selectedAlbum);
+	                
+	                System.out.println("Successfully Removed " + selectedAlbum.getTitle() + " from library!");
+	                break;
+	            }
+        	}
+    	}
     }
 
     private void handleSongsSearchInLibrary(List<Song> searchResult) {
@@ -534,8 +592,9 @@ public class View {
             System.out.println("[4] - Unmark as favorite");
             System.out.println("[5] - Add to a playlist");
             System.out.println("[6] - Play");
+            System.out.println("[7] - Remove from library");
             printBackOrExitMessege();
-            int command = getUserInput(6);
+            int command = getUserInput(7);
             if (command == 0) {
                 break;
             } else if (command == 1) {
@@ -557,6 +616,10 @@ public class View {
                 handleAddSongToPlaylist(song);
             } else if (command == 6) {
                 playSong(song);
+            } else if (command == 7) {
+            	libraryModel.removeSong(song);
+            	libraryModel.initAutomaticPlaylists();
+            	System.out.println("Song " + song.getTitle() + " removed from library");
             }
         }
     }

@@ -175,6 +175,11 @@ public class LibraryModel {
         }
         return null;
     }
+    
+    public void shufflePlaylist(String playlist) {
+    	Playlist pl = getPlaylistFromName(playlist);
+    	pl.shuffle();
+    }
 
     /**
      * Get the list of the songs in the playlist.
@@ -254,20 +259,25 @@ public class LibraryModel {
     }
 
     public List<Song> getSongsSortedByArtist() {
-        List<Song> returnList = this.getAllSongs();
-
-        returnList.sort((s1, s2) -> s1.getArtist().compareTo(s2.getArtist()));
-
-        return returnList;
+    	List<Song> returnList = this.getAllSongs();
+    	
+    	returnList.sort((s1,s2) -> s1.getArtist().compareTo(s2.getArtist()));
+    	
+    	return returnList;
     }
-
-
-    public List<SongInLibrary> getSongsSortedByRating() {
-        List<SongInLibrary> returnList = this.getAllSongsInLibrary();
-
-        returnList.sort(Comparator.comparing(SongInLibrary -> SongInLibrary.getRating()));
-
-        return returnList;
+    
+    
+    public List<Song> getSongsSortedByRating() {
+    	List<SongInLibrary> sortedList = this.getAllSongsInLibrary();
+    	
+    	sortedList.sort(Comparator.comparing(SongInLibrary -> SongInLibrary.getRating()));
+    	
+    	List<Song> returnList = new ArrayList<Song>();
+    	for(SongInLibrary sil : sortedList) {
+    		returnList.add(sil.getSong());
+    	}
+    	
+    	return returnList;
     }
 
     public List<Song> getFavoriteSongs() {
@@ -342,17 +352,23 @@ public class LibraryModel {
     }
 
     public void removeAlbum(Album a) {
-        if (albums.remove(a)) {
-            for (SongInLibrary sil : songs) {
-                if (sil.getSong().getAlbum().equals(a.getTitle())) {
-                    removeSong(sil.getSong());
-                }
-            }
-        }
+    	if(albums.remove(a)) {
+    		ArrayList<Song> toRemove = new ArrayList<Song>();
+    		for(SongInLibrary sil : songs) {
+	    		if(sil.getSong().getAlbum().equals(a.getTitle())) {
+	    			toRemove.add(sil.getSong());
+	    		}
+    		}
+    		
+    		for(Song s : toRemove) {
+    			removeSong(s);
+    		}
 
-        initAutomaticPlaylists();
+    	}
+    	
+    	initAutomaticPlaylists();
     }
-
+    
     public void shuffleSongs() {
         Collections.shuffle(songs);
     }
