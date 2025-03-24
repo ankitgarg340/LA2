@@ -230,8 +230,9 @@ public class View {
             System.out.println("[2] - By artist");
             System.out.println("[3] - Get all");
             System.out.println("[4] - Get favorites");
+            System.out.println("[5] - By genre");
             printBackOrExitMessege();
-            int command = getUserInput(4);
+            int command = getUserInput(5);
             if (command == 0) {
                 break;
             } else if (command == 1) {
@@ -242,6 +243,8 @@ public class View {
                 handleSongsSearchInLibrary(libraryModel.getAllSongs());
             } else if (command == 4) {
                 handleSongsSearchInLibrary(libraryModel.getFavoriteSongs());
+            } else if (command == 5) {
+                handleSongsSearchInLibrary(searchSongsInLibraryByGenre());
             }
         }
     }
@@ -428,6 +431,13 @@ public class View {
         String input = scanner.nextLine();
         return libraryModel.getSongsByArtist(input);
     }
+
+    private List<Song> searchSongsInLibraryByGenre() {
+        System.out.println("Enter the genre of the song");
+        String input = scanner.nextLine();
+        return libraryModel.getSongsByGenre(input);
+    }
+
 
     private void actionOnSongInLibrary(Song song) {
         while (true) {
