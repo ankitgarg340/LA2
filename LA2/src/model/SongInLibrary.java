@@ -12,6 +12,7 @@ public class SongInLibrary {
     public SongInLibrary(Song s) {
         song = s;
         isFavorite = false;
+        rating = 0;
         playCounter = 0;
         lastPlayed = null;
     }
