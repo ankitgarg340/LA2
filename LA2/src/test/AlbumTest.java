@@ -87,4 +87,14 @@ public class AlbumTest {
         assertFalse(a.toString().contains(s1.getTitle()));
         assertFalse(a.toString().contains(s2.getTitle()));
     }
+
+    @Test
+    public void testGetGenre(){
+        String title = "abababababababa";
+        String artist = "aaaaaaaaa";
+        String genre = "ggggggggggggggg";
+        String year = "20986334";
+        Album a = new Album(title,artist,genre,year,new ArrayList<>());
+        assertEquals(genre, a.getGenre());
+    }
 }

@@ -10,9 +10,15 @@ public class LibraryModel {
     private final List<Playlist> playlists;
     private transient Playlist recentPlaylist;
     private transient Playlist frequentPlaylist;
+    private transient Playlist faivoritePlaylist;
+    private transient Playlist topRatedPlaylist;
+    private transient HashMap<String, Playlist> genrePlaylists;
 
     private transient final String RECENT_PLAYLIST_NAME = "Most Recent Played Songs";
     private transient final String FREQUENT_PLAYLIST_NAME = "Most Frequently Played Songs";
+    private transient final String FAVORITE_PLAYLIST_NAME = "Favorite Songs";
+    private transient final String TOP_RATED_PLAYLIST_NAME = "Top Rated Songs";
+    private transient final String GENRE_PLAYLIST_START = "Genre: ";
 
     public LibraryModel() {
         songs = new ArrayList<>();
@@ -20,6 +26,9 @@ public class LibraryModel {
         playlists = new ArrayList<>();
         recentPlaylist = new Playlist(RECENT_PLAYLIST_NAME);
         frequentPlaylist = new Playlist(FREQUENT_PLAYLIST_NAME);
+        faivoritePlaylist = new Playlist(FAVORITE_PLAYLIST_NAME);
+        topRatedPlaylist = new Playlist(TOP_RATED_PLAYLIST_NAME);
+        genrePlaylists = new HashMap<>();
     }
 
     public void addSong(Song s) {
@@ -32,10 +41,13 @@ public class LibraryModel {
         return getSongInLibraryFromSong(song) != null;
     }
 
+    /**
+     * Add an album and all its songs to the library
+     *
+     * @param album - album to add to the library
+     */
     public void addAlbum(Album album) {
-        if (!albums.contains(album)) {
-            albums.add(album);
-        }
+        addOnlyAlbum(album);
 
         // add the songs of the album
         for (Song song : album.getSongs()) {
@@ -47,8 +59,22 @@ public class LibraryModel {
         }
     }
 
+    /**
+     * Add only the album to the library
+     *
+     * @param album - album to add to the library
+     */
+    public void addOnlyAlbum(Album album) {
+        if (!albums.contains(album)) {
+            albums.add(album);
+        }
+
+    }
+
     public void createPlaylist(String name) {
-        if (!getUserPlaylistsNames().contains(name) && !isPlaylistAutomatic(name)) {
+        if (!getUserPlaylistsNames().contains(name) &&
+                !isPlaylistAutomatic(name) &&
+                !name.startsWith(GENRE_PLAYLIST_START)) {
             playlists.add(new Playlist(name));
         }
     }
@@ -81,6 +107,9 @@ public class LibraryModel {
         List<String> returnPlaylistsNames = getUserPlaylistsNames();
         returnPlaylistsNames.add(recentPlaylist.getName());
         returnPlaylistsNames.add(frequentPlaylist.getName());
+        returnPlaylistsNames.add(faivoritePlaylist.getName());
+        returnPlaylistsNames.add(topRatedPlaylist.getName());
+        returnPlaylistsNames.addAll(genrePlaylists.keySet());
         return returnPlaylistsNames;
     }
 
@@ -99,10 +128,11 @@ public class LibraryModel {
                 throw new IllegalArgumentException("bad rating");
             }
             sil.rate(rating);
-
+            initTopRatedPlaylist();
             if (rating == 5) {
                 sil.markFavorite();
             }
+            initFavoritePlaylist();
         }
     }
 
@@ -110,6 +140,7 @@ public class LibraryModel {
         SongInLibrary sil = getSongInLibraryFromSong(s);
         if (sil != null) {
             sil.markFavorite();
+            initFavoritePlaylist();
         }
     }
 
@@ -117,6 +148,7 @@ public class LibraryModel {
         SongInLibrary sil = getSongInLibraryFromSong(s);
         if (sil != null) {
             sil.markUnFavorite();
+            initFavoritePlaylist();
         }
     }
 
@@ -126,6 +158,15 @@ public class LibraryModel {
         }
         if (name.equals(FREQUENT_PLAYLIST_NAME)) {
             return frequentPlaylist;
+        }
+        if (name.equals(FAVORITE_PLAYLIST_NAME)) {
+            return faivoritePlaylist;
+        }
+        if (name.equals(TOP_RATED_PLAYLIST_NAME)) {
+            return topRatedPlaylist;
+        }
+        if (genrePlaylists.containsKey(name)) {
+            return genrePlaylists.get(name);
         }
         for (Playlist p : playlists) {
             if (p.getName().equals(name)) {
@@ -362,13 +403,36 @@ public class LibraryModel {
 
     public boolean isPlaylistAutomatic(String playlistName) {
         return playlistName.equals(RECENT_PLAYLIST_NAME) ||
-                playlistName.equals(FREQUENT_PLAYLIST_NAME);
+                playlistName.equals(FREQUENT_PLAYLIST_NAME) ||
+                playlistName.equals(FAVORITE_PLAYLIST_NAME) ||
+                playlistName.equals(TOP_RATED_PLAYLIST_NAME) ||
+                playlistName.startsWith(GENRE_PLAYLIST_START);
 
+    }
+
+    public List<Song> getSongsByGenre(String genre) {
+        List<Album> albumsOfGenre = albums.stream()
+                .filter(item -> item.getGenre().equals(genre))
+                .toList();
+
+        List<Song> songsOfGenre = new ArrayList<>();
+        for (Album album : albumsOfGenre) {
+            List<Song> allAlbumSongs = album.getSongs();
+            List<Song> songsOfAlbumInLib = songs.stream()
+                    .map(SongInLibrary::getSong)
+                    .filter(allAlbumSongs::contains)
+                    .toList();
+            songsOfGenre.addAll(songsOfAlbumInLib);
+        }
+        return songsOfGenre;
     }
 
     public void initAutomaticPlaylists() {
         initRecentPlaylist();
         initFrequentPlaylist();
+        initFavoritePlaylist();
+        initTopRatedPlaylist();
+        initGenrePlaylist();
     }
 
     private void initRecentPlaylist() {
@@ -397,6 +461,52 @@ public class LibraryModel {
         for (SongInLibrary sortedSong : sorted_songs) {
             frequentPlaylist.addSong(sortedSong.getSong());
         }
-
     }
+
+    private void initFavoritePlaylist() {
+        List<SongInLibrary> fav_songs = songs.stream()
+                .filter(item -> item.isFavorite() || item.getRating() == 5)
+                .toList();
+
+        faivoritePlaylist = new Playlist(FAVORITE_PLAYLIST_NAME);
+
+        for (SongInLibrary sortedSong : fav_songs) {
+            faivoritePlaylist.addSong(sortedSong.getSong());
+        }
+    }
+
+    private void initTopRatedPlaylist() {
+        List<SongInLibrary> top_songs = songs.stream()
+                .filter(item -> item.getRating() == 4 || item.getRating() == 5)
+                .toList();
+
+        topRatedPlaylist = new Playlist(TOP_RATED_PLAYLIST_NAME);
+
+        for (SongInLibrary sortedSong : top_songs) {
+            topRatedPlaylist.addSong(sortedSong.getSong());
+        }
+    }
+
+    private void initGenrePlaylist() {
+        genrePlaylists = new HashMap<>();
+        // get all the existing genres in the library
+        Set<String> genres = new HashSet<>();
+        for (Album a : albums) {
+            genres.add(a.getGenre());
+        }
+
+        for (String genre : genres) {
+            List<Song> songsOfGenre = getSongsByGenre(genre);
+            // if this genre has more than 10 songs, create a playlist for it.
+            if (songsOfGenre.size() >= 10) {
+                String playlistName = GENRE_PLAYLIST_START + genre;
+                Playlist p = new Playlist(GENRE_PLAYLIST_START + genre);
+                for (Song s : songsOfGenre) {
+                    p.addSong(s);
+                }
+                genrePlaylists.put(playlistName, p);
+            }
+        }
+    }
+
 }

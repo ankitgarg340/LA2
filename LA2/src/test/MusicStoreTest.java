@@ -104,7 +104,7 @@ public class MusicStoreTest {
     @Test
     public void testGetAlbumsSendCopy() {
         List<Album> returnAlbums = ms.getAlbums();
-        returnAlbums.add(new Album("a","a", "a", "2", new ArrayList<>()));
+        returnAlbums.add(new Album("a", "a", "a", "2", new ArrayList<>()));
         assertEquals(3, ms.getAlbums().size());
     }
 
@@ -167,4 +167,19 @@ public class MusicStoreTest {
     public void testGetAlbumByArtistNoAlbum() {
         assertEquals(0, ms.getAlbumByArtist("ttttttttttttttt").size());
     }
+
+    @Test
+    public void testAlbumBySongExist() {
+        Song s = ms.getSongByTitle("song2").get(0);
+        Album a = ms.getAlbumByTitle("album2").get(0);
+        assertEquals(a, ms.getAlbumBySong(s));
+    }
+
+    @Test
+    public void testAlbumBySongNotExist() {
+        Song s = new Song("a","a","a");
+        assertNull(ms.getAlbumBySong(s));
+    }
+
+
 }

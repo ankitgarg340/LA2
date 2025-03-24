@@ -35,4 +35,7 @@ public class Album {
         return title + " by " + artist + " of genre " + genre + " released in " + year;
     }
 
+    public String getGenre() {
+        return genre;
+    }
 }

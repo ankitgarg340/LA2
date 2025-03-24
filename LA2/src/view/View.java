@@ -232,6 +232,7 @@ public class View {
             } else if (command >= 1 && command <= searchResult.size()) {
                 Song selectedSong = searchResult.get(command - 1);
                 libraryModel.addSong(selectedSong);
+                libraryModel.addOnlyAlbum(musicStore.getAlbumBySong(selectedSong));
                 System.out.println("The song " + selectedSong.toString() + " is in your library");
             }
         }
@@ -332,8 +333,9 @@ public class View {
             System.out.println("[2] - By artist");
             System.out.println("[3] - Get all");
             System.out.println("[4] - Get favorites");
+            System.out.println("[5] - By genre");
             printBackOrExitMessege();
-            int command = getUserInput(4);
+            int command = getUserInput(5);
             if (command == 0) {
                 break;
             } else if (command == 1) {
@@ -344,6 +346,8 @@ public class View {
                 handleSongsSearchInLibrary(libraryModel.getAllSongs());
             } else if (command == 4) {
                 handleSongsSearchInLibrary(libraryModel.getFavoriteSongs());
+            } else if (command == 5) {
+                handleSongsSearchInLibrary(searchSongsInLibraryByGenre());
             }
         }
     }
@@ -391,17 +395,17 @@ public class View {
 
     private void handlePlaylistAction(String playlist) {
         while (true) {
-            System.out.println("How would like to do on the playlist " + playlist);
+            System.out.println("What would like to do on the playlist " + playlist);
             System.out.println("[1] - View all songs");
-            if(!libraryModel.isPlaylistAutomatic(playlist)) {
+            if (!libraryModel.isPlaylistAutomatic(playlist)) {
                 System.out.println("[2] - Remove a song");
             }
             printBackOrExitMessege();
             int command;
 
-            if(libraryModel.isPlaylistAutomatic(playlist)) {
+            if (libraryModel.isPlaylistAutomatic(playlist)) {
                 command = getUserInput(1);
-            } else{
+            } else {
                 command = getUserInput(2);
             }
             if (command == 0) {
@@ -530,6 +534,13 @@ public class View {
         String input = scanner.nextLine();
         return libraryModel.getSongsByArtist(input);
     }
+
+    private List<Song> searchSongsInLibraryByGenre() {
+        System.out.println("Enter the genre of the song");
+        String input = scanner.nextLine();
+        return libraryModel.getSongsByGenre(input);
+    }
+
 
     private void actionOnSongInLibrary(Song song) {
         while (true) {
