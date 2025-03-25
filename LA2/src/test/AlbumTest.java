@@ -97,4 +97,14 @@ public class AlbumTest {
         Album a = new Album(title,artist,genre,year,new ArrayList<>());
         assertEquals(genre, a.getGenre());
     }
+
+    @Test
+    public void testGetYear(){
+        String title = "abababababababa";
+        String artist = "aaaaaaaaa";
+        String genre = "ggggggggggggggg";
+        String year = "20986334";
+        Album a = new Album(title,artist,genre,year,new ArrayList<>());
+        assertEquals(year, a.getYear());
+    }
 }
