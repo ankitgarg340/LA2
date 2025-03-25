@@ -11,6 +11,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class LibraryModelTest {
 
@@ -32,12 +33,188 @@ public class LibraryModelTest {
         libraryModel.addSongToPlayList("test", s1);
         libraryModel.addSongToPlayList("test", s2);
         libraryModel.createPlaylist("empty");
+        
 
         try {
             libraryModel.rateSong(s1, 3);
         } catch (IllegalArgumentException e) {
             fail();
         }
+    }
+    
+    @Test
+    public void testMakeCopy() {
+    	LibraryModel l2 = libraryModel.makeCopy();
+    	
+    	Song s4 = new Song("s4", "a", "b");
+    	
+    	assertFalse(l2.containSong(s1));
+    	assertFalse(l2.containSong(s2));
+    	assertFalse(l2.containSong(s4));
+    	
+    	List<String> test = new ArrayList<>();
+    	for (Song s : l2.getAllSongs()) {
+    		test.add(s.getTitle());
+    	}
+    	
+    	assertTrue(test.contains("s1"));
+    	assertTrue(test.contains("s2"));
+    	assertFalse(test.contains("s4"));
+    }
+    
+    @Test
+    public void testRemoveSong() {
+    	Song s4 = new Song("s4", "a", "b");
+    	assertFalse(libraryModel.containSong(s4));
+    	
+    	libraryModel.removeSong(s4);
+    	assertFalse(libraryModel.containSong(s4));
+    	
+    	assertTrue(libraryModel.containSong(s2));
+    	assertTrue(libraryModel.getSongsOfPlaylist("test").contains(s2));
+
+    	
+    	libraryModel.removeSong(s2);
+    	assertFalse(libraryModel.containSong(s2));
+    	
+    	
+    	assertFalse(libraryModel.getSongsOfPlaylist("test").contains(s2));
+    }
+    
+    @Test
+    public void testShuffleSongs() {
+    	Song s4 = new Song("s4", "a", "b");
+    	libraryModel.addSong(s4);
+    	
+    	Song s5 = new Song("s5", "a", "b");
+    	libraryModel.addSong(s5);
+    	
+    	Song s6 = new Song("s6", "a", "b");
+    	libraryModel.addSong(s6);
+    	
+    	Song s7 = new Song("s7", "a", "b");
+    	libraryModel.addSong(s4);
+    	
+    	List<Song> l1 = libraryModel.getAllSongs();
+    	
+    	libraryModel.shuffleSongs();
+    	
+    	List<Song> l2 = libraryModel.getAllSongs();
+    	
+    	assertFalse(l1.equals(l2));
+    }
+    
+    @Test
+    public void testPlaySong() {
+    	assertEquals(libraryModel.getSongPlaysCount(s1), 0);
+    	libraryModel.playSong(s1);
+    	
+    	assertEquals(libraryModel.getSongPlaysCount(s1), 1);
+    	libraryModel.playSong(s1);
+    	
+    	assertEquals(libraryModel.getSongPlaysCount(s1), 2);
+    	libraryModel.playSong(s1);
+    	
+    	assertEquals(libraryModel.getSongPlaysCount(s1), 3);
+    	
+    	assertEquals(libraryModel.getSongPlaysCount(s2), 0);
+    	assertEquals(libraryModel.getSongPlaysCount(s3), 0);
+    	
+    	Song s4 = new Song("s4", "a", "b");
+    	assertEquals(libraryModel.getSongPlaysCount(s4), -1);
+    }
+    
+    @Test
+    public void testGetSongLastPlayDate() {
+    	
+    }
+    
+    @Test
+    public void testRemoveAlbum() {
+    	Song s4 = new Song("s4", "a", "b");
+    	
+    	assertTrue(libraryModel.containSong(s1));
+    	
+    	Album b = new Album("A", "A", "A", "A", List.of(s4));
+    	
+    	libraryModel.removeAlbum(a);
+    	libraryModel.removeAlbum(b);
+    	
+    	assertFalse(libraryModel.containSong(s1));
+    	assertTrue(libraryModel.containSong(s2));
+    	assertFalse(libraryModel.containSong(s4));
+
+    }
+    
+    @Test
+    public void testGetAllPlaylistNames() {
+    	assertTrue(libraryModel.getAllPlaylistsNames().contains("Most Recent Played Songs"));
+    	assertTrue(libraryModel.getAllPlaylistsNames().contains("Top Rated Songs"));
+    	assertFalse(libraryModel.getAllPlaylistsNames().contains("not in playlists"));
+    	assertFalse(libraryModel.getAllPlaylistsNames().contains("Genre: g"));
+    	assertFalse(libraryModel.getAllPlaylistsNames().contains("Genre: fail"));
+    }
+    
+    @Test
+    public void testGetSongSortedByTitle() {
+    	List<Song> testList = libraryModel.getSongsSortedByTitle();
+    	assertEquals(testList.get(0), s1);
+    	assertEquals(testList.get(1), s2);
+    	assertEquals(testList.get(2), s3);
+    }
+    
+    @Test
+    public void testGetSongSortedByArtist() {
+    	Song s4 = new Song("s4", "z", "album4");
+    	
+    	libraryModel.addSong(s4);
+    	
+    	List<Song> testList = libraryModel.getSongsSortedByArtist();
+    	assertEquals(testList.get(0), s1);
+    	assertEquals(testList.get(1), s2);
+    	assertEquals(testList.get(2), s3);
+    	assertEquals(testList.get(3), s4);
+    	
+    }
+    
+    @Test
+    public void testGetSongsSortedByRating() {
+    	libraryModel.rateSong(s3, 1);
+    	libraryModel.rateSong(s2, 2);
+    	libraryModel.rateSong(s1, 3);
+    	
+    	List<Song> testList = libraryModel.getSongsSortedByRating();
+    	
+    	assertEquals(testList.get(0), s3);
+    	assertEquals(testList.get(1), s2);
+    	assertEquals(testList.get(2), s1);
+    	
+    }
+    
+    
+    
+    @Test
+    public void testShufflePlaylists() {
+    	Song s4 = new Song("s4", "a", "album4");
+    	Song s5 = new Song("s5", "a", "album4");
+    	Song s6 = new Song("s6", "a", "album4");
+    	libraryModel.addSong(s4);
+    	libraryModel.addSong(s5);
+    	libraryModel.addSong(s6);
+    	libraryModel.addSongToPlayList("test", s4);
+    	libraryModel.addSongToPlayList("test", s5);
+    	libraryModel.addSongToPlayList("test", s6);
+
+    	
+    	List<Song> pre = libraryModel.getSongsOfPlaylist("test");
+    	assertEquals(pre.get(0), s1);
+    	assertEquals(pre.get(1), s2);
+    	
+    	libraryModel.shufflePlaylist("test");
+    	
+    	
+    	List<Song> post = libraryModel.getSongsOfPlaylist("test");
+    	assertFalse(pre.equals(post));
     }
     
     @Test

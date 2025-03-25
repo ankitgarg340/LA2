@@ -370,7 +370,7 @@ public class LibraryModel {
     }
     
     public void shuffleSongs() {
-    	Collections.shuffle(songs);
+    	Collections.shuffle(songs, new Random(504));
     }
 
     public void playSong(Song s) {
