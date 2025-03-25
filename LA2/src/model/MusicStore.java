@@ -1,5 +1,6 @@
 package model;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
@@ -15,20 +16,26 @@ public class MusicStore {
         albums = new ArrayList<>();
     }
 
+    public void readFile(String file) throws IOException {
+        readFile(new File(file));
+    }
+
     /**
      * Read the albums, create their songs, and add the albums
      *
      * @param file all the albums to read
      * @throws IOException if could not read the albums file or any specific album file
      */
-    public void readFile(String file) throws IOException {
+    public void readFile(File file) throws IOException {
         BufferedReader br = new BufferedReader(new FileReader(file));
         String line;
-
         // for every album in the file
         while ((line = br.readLine()) != null) {
             String[] albumLine = line.split(",");
-            String albumFile = albumLine[0] + "_" + albumLine[1] + ".txt";
+            String albumFile = albumLine[0] + "_" + albumLine[1] + ".txt ";
+            if (file.getParent() != null) {
+                albumFile = file.getParent() + "\\" + albumFile;
+            }
             BufferedReader brAlbum = new BufferedReader(new FileReader(albumFile));
 
             ArrayList<Song> songs = new ArrayList<>();
@@ -109,6 +116,7 @@ public class MusicStore {
 
     /**
      * Get the album of a song, null if an album doesn't exist for the song
+     *
      * @param song a song we search for an album
      * @return an album or null
      */

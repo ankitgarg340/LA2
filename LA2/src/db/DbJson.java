@@ -19,15 +19,15 @@ import javax.crypto.spec.PBEKeySpec;
 
 
 public class DbJson implements IDb {
-    private static final String FILE_PATH = "users.json";
     private final Gson gson;
-
+    private final String file_path;
     private HashMap<String, User> usersByUsername;
 
-    public DbJson() throws IOException {
+    public DbJson(String filepath) throws IOException {
         gson = new Gson();
         usersByUsername = new HashMap<>();
-        File file = new File(FILE_PATH);
+        file_path = filepath;
+        File file = new File(filepath);
         if (!file.exists()) {
             if (!file.createNewFile()) {
                 throw new IOException("Could not create db file");
@@ -68,7 +68,7 @@ public class DbJson implements IDb {
     }
 
     private void saveUsers() {
-        try (FileWriter writer = new FileWriter(FILE_PATH)) {
+        try (FileWriter writer = new FileWriter(file_path)) {
             gson.toJson(usersByUsername, writer);
         } catch (IOException e) {
             System.out.println("Failed saving db");
@@ -87,7 +87,7 @@ public class DbJson implements IDb {
     }
 
     private void loadUsers() throws IOException {
-        Reader reader = new FileReader(FILE_PATH);
+        Reader reader = new FileReader(file_path);
         Type usersType = new TypeToken<HashMap<String, User>>() {
         }.getType();
         usersByUsername = gson.fromJson(reader, usersType);
