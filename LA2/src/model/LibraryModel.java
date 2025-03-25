@@ -35,6 +35,7 @@ public class LibraryModel {
         if (!containSong(s)) {
             songs.add(new SongInLibrary(s));
         }
+        initAutomaticPlaylists();
     }
 
     public boolean containSong(Song song) {
