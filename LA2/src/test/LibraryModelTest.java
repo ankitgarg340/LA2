@@ -759,4 +759,16 @@ public class LibraryModelTest {
         assertFalse(libraryModel.getSongsOfPlaylist("Most Frequently Played Songs").contains(s1));
     }
 
+    @Test
+    public void testGetSongsOfPlaylistAutoNotNull(){
+        assertNotNull(libraryModel.getSongsOfPlaylist("Most Recent Played Songs"));
+        assertNotNull(libraryModel.getSongsOfPlaylist("Most Frequently Played Songs"));
+        assertNotNull(libraryModel.getSongsOfPlaylist("Favorite Songs"));
+        assertNotNull(libraryModel.getSongsOfPlaylist("Top Rated Songs"));
+
+        assertNull(libraryModel.getSongsOfPlaylist("Genre: POP"));
+        addGenreToLib(libraryModel);
+        assertNotNull(libraryModel.getSongsOfPlaylist("Genre: POP"));
+    }
+
 }
