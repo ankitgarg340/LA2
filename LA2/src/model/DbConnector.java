@@ -10,12 +10,17 @@ import java.util.List;
 import java.util.Optional;
 
 public class DbConnector {
+    private static final String DEFAULT_FILE_PATH = "users.json";
     private final IDb db;
     private final MusicStore musicStore;
 
     public DbConnector(MusicStore store) throws IOException {
+        this(store, DEFAULT_FILE_PATH);
+    }
+
+    public DbConnector(MusicStore store, String filepath) throws IOException {
         musicStore = store;
-        db = new DbJson();
+        db = new DbJson(filepath);
     }
 
     private LibraryModel getLibraryModelInfoFromStore(LibraryModel dbLib) {
