@@ -38,4 +38,8 @@ public class Album {
     public String getGenre() {
         return genre;
     }
+    
+    public String getYear() {
+    	return year;
+    }
 }
