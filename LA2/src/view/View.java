@@ -260,6 +260,7 @@ public class View {
         while (true) {
             if (searchResult.isEmpty()) {
                 System.out.println("No albums were found");
+                printBackOrExitMessege();
                 break;
             }
             System.out.println("Here are the albums for your search");
@@ -499,6 +500,7 @@ public class View {
     	while(true) {
 	        if (searchResult.isEmpty()) {
 	            System.out.println("No albums were found");
+	            break;
 	        } else {
 	            System.out.println("Here are the albums for your search");
 	            System.out.println("Which album (and associated songs) would you like to remove from library?");
@@ -593,8 +595,9 @@ public class View {
             System.out.println("[5] - Add to a playlist");
             System.out.println("[6] - Play");
             System.out.println("[7] - Remove from library");
+            System.out.println("[8] - Get Album Information");
             printBackOrExitMessege();
-            int command = getUserInput(7);
+            int command = getUserInput(8);
             if (command == 0) {
                 break;
             } else if (command == 1) {
@@ -620,13 +623,43 @@ public class View {
             	libraryModel.removeSong(song);
             	libraryModel.initAutomaticPlaylists();
             	System.out.println("Song " + song.getTitle() + " removed from library");
+            } else if (command == 8) {
+            	handleAlbumInfoInLibrary(song);
             }
         }
+    }
+    
+    private void handleAlbumInfoInLibrary(Song s) {
+    	while(true) {
+	    	Album a = musicStore.getAlbumBySong(s);
+	    	System.out.println("Here is the information for the album containing " + s.getTitle());
+	    	System.out.println("Album name: " + a.getTitle());
+	    	System.out.println("Album artists: " + a.getArtist());
+	    	System.out.println("Album genre: " + a.getGenre());
+	    	System.out.println("Album year: " + a.getYear());
+	    	
+	    	if(libraryModel.getAllAlbums().contains(a)) {
+	    		System.out.println("This Album is already in your library");
+	    	} else {
+	    		System.out.println("This Album is not in your library");
+	    	}
+	    	
+	        System.out.println("\tSongs in album:");
+	        for (Song song : a.getSongs()) {
+	            System.out.println("\t\t" + song.toString());
+	        }
+	        
+	        printBackOrExitMessege();
+	        int command = getUserInput(0);
+	        if(command == 0) {
+	        	break;
+	        }
+	    }
     }
 
     private void playSong(Song s) {
         libraryModel.playSong(s);
-        System.out.println("You listen to song " + s.getTitle() + " for the " + libraryModel.getSongPlaysCount(s));
+        System.out.println("You listen to song " + s.getTitle() + " " + libraryModel.getSongPlaysCount(s) + " times");
     }
 
     private void rateSong(Song song) {
